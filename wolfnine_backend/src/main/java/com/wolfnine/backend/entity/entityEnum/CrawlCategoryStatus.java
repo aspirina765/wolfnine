@@ -1,9 +1,10 @@
 package com.wolfnine.backend.entity.entityEnum;
 
 public enum CrawlCategoryStatus {
-    ACTIVE(1),
-    DEACTIVE(0),
-    DELETED(-1),
+    CRAWLED(1),
+    PENDING(0),
+    FAILED(-1),
+    CRAWLING(3),
     UNDEFINED(2);
     private int value;
 

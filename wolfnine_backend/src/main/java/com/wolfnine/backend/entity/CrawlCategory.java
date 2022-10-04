@@ -24,4 +24,10 @@ public class CrawlCategory {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    @OneToOne
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private User user;
+    @ManyToOne
+    @JoinColumn(name = "crawlConfigId", insertable = false, updatable = false)
+    private CrawlConfig crawlConfig;
 }

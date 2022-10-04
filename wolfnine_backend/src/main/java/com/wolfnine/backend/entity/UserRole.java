@@ -14,9 +14,12 @@ import java.time.LocalDateTime;
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int roleId;
-    private int userId;
+    private long id;
+    private long roleId;
+    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private User user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;

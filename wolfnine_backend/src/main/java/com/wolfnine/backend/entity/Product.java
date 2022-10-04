@@ -18,7 +18,7 @@ public class Product {
     private long crawlCategoryId;
     private long categoryId;
     private long userId;
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "json")
     private String attributes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
