@@ -8,4 +8,5 @@ public interface CrawlCategoryService {
     List<CrawlCategory> findByUserId(long userId);
     CrawlCategory save(CrawlCategory crawlCategory);
     CrawlCategory findById(long id);
+    List<CrawlCategory> findAll();
 }

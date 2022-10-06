@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +22,7 @@ public class CrawlCategory {
     private String link;
     private long crawlConfigId;
     private long userId;
+    private long categoryId;
     private CrawlCategoryStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -30,4 +33,6 @@ public class CrawlCategory {
     @ManyToOne
     @JoinColumn(name = "crawlConfigId", insertable = false, updatable = false)
     private CrawlConfig crawlConfig;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "crawlCategory")
+    private List<Product> products;
 }

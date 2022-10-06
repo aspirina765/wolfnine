@@ -34,4 +34,9 @@ public class CrawlCategoryServiceV1 implements CrawlCategoryService {
         }
         return null;
     }
+
+    @Override
+    public List<CrawlCategory> findAll() {
+        return crawlCategoryRepository.findAll();
+    }
 }
