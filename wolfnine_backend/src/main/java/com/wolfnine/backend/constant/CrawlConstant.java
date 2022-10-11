@@ -10,4 +10,5 @@ public class CrawlConstant {
     public static final int CONFIG_KEY_IS_LINK_ACTIVE = 1;
     public static final int CONFIG_KEY_IS_LINK_DEACTIVE = 2;
     public static final String CONFIG_KEY_ITEM_VALUE = "value";
+    public static final String CONFIG_KEY_DATA_TYPE = "dataType";
 }

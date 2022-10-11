@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.wolfnine.backend.entity.auth.Credential;
 import com.wolfnine.backend.entity.dto.UserLoginDto;
 import com.wolfnine.backend.util.JwtUtil;
+import com.wolfnine.backend.util.ResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -63,7 +64,7 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
                 .build();
         Gson gson = new Gson();
         response.setContentType("application/json");
-        response.getWriter().print(gson.toJson(credential));
+        response.getWriter().print(gson.toJson(ResponseHandler.generateResponse(credential).getBody()));
     }
 
     @Override

@@ -1,0 +1,36 @@
+{
+  "name": "wolfnine_frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/styled": "^11.10.4",
+    "@faker-js/faker": "^7.5.0",
+    "@iconify/react": "^4.0.0",
+    "@mui/icons-material": "^5.10.6",
+    "@mui/material": "^5.10.8",
+    "axios": "^1.1.2",
+    "change-case": "^4.1.2",
+    "date-fns": "^2.29.3",
+    "next": "^12.3.1",
+    "next-auth": "^4.13.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.37.0",
+    "react-router-dom": "^6.4.2",
+    "simplebar-react": "^2.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "18.8.3",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "eslint": "8.24.0",
+    "eslint-config-next": "12.3.1",
+    "typescript": "4.8.4"
+  }
+}

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.wolfnine.backend.entity.entityEnum.CrawlConfigStatus;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,11 +25,8 @@ public class CrawlConfig {
     private String name;
     private String baseUrl;
     private String selectorList;
-    private String selectorThumbnail;
-    private String selectorTitle;
-    private String selectorPrice;
-    private String selectorDiscountPrice;
     private String selectorLink;
+    @Enumerated
     private CrawlConfigStatus status;
     @Column(columnDefinition = "json")
     @JsonRawValue
@@ -36,7 +35,9 @@ public class CrawlConfig {
     @JsonRawValue
     private String selectorDetails;
     private long userId;
+    @CreatedDate
     private LocalDateTime createdAt;
+    @LastModifiedDate
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
     @OneToMany(mappedBy = "crawlConfig", fetch = FetchType.LAZY)

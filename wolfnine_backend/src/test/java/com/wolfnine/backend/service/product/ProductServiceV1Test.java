@@ -27,7 +27,7 @@ class ProductServiceV1Test {
 
     @Test
     void findAllByStatus() {
-        List<Product> products = productService.findAllByStatus(ProductStatus.NOT_CRAWL);
+        List<Product> products = productService.findAllByStatus(ProductStatus.PENDING);
         for(Product product : products) {
             System.out.println(product.getCrawlCategory());
         }

@@ -7,6 +7,7 @@ import com.wolfnine.backend.entity.dto.UserRegisterDto;
 import com.wolfnine.backend.entity.entityEnum.UserStatus;
 import com.wolfnine.backend.repository.UserRepository;
 import com.wolfnine.backend.util.JwtUtil;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

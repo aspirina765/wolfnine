@@ -2,6 +2,7 @@ package com.wolfnine.backend.restApi;
 
 import com.wolfnine.backend.entity.dto.UserRegisterDto;
 import com.wolfnine.backend.service.user.UserService;
+import com.wolfnine.backend.util.ResponseHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class AuthController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDto userRegisterDto) {
-        return ResponseEntity.ok(userService.register(userRegisterDto));
+        return ResponseHandler.generateResponse(userService.register(userRegisterDto));
     }
 
     @ExceptionHandler({ ConstraintViolationException.class })

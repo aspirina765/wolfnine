@@ -23,6 +23,7 @@ public class CrawlCategory {
     private long crawlConfigId;
     private long userId;
     private long categoryId;
+    @Enumerated(EnumType.ORDINAL)
     private CrawlCategoryStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

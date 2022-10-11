@@ -40,7 +40,12 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
         MyAuthenticationFilter authenticationFilter = new MyAuthenticationFilter(authenticationManagerBean());
         authenticationFilter.setFilterProcessesUrl("/api/v1/users/login");
         http.authorizeHttpRequests().antMatchers("/api/v1/users/register").permitAll();
-        http.authorizeHttpRequests().antMatchers("/api/v1/products")
+        http.authorizeHttpRequests()
+                .antMatchers(
+                        "/api/v1/products",
+                        "/api/v1/crawler/configs/*",
+                        "/api/v1/crawler/configs"
+                )
                 .hasAnyAuthority("USER", "ADMIN");
         http
                 .addFilterBefore(new MyAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
