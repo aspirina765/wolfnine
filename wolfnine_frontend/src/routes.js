@@ -10,34 +10,44 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
+import ProtectedRoute from './modules/auth/contexts/protectedRoute';
+import { ROUTES } from './constants/routerConfig';
+import CrawlerConfig from './modules/crawlerConfig/CrawlerConfig';
+import CreateCrawlerConfig from './modules/crawlerConfig/pages/CreateCrawlerConfig';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
-      element: <DashboardLayout />,
+      path: ROUTES.DASHBOARD_PARENT,
+      element: (
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      ),
       children: [
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
+        { path: ROUTES.DASHBOARD_APP_PATH, element: <DashboardApp /> },
+        { path: ROUTES.CRAWLER_CONFIGS, element: <CrawlerConfig /> },
+        { path: ROUTES.CREATE_CRAWLER_CONFIG, element: <CreateCrawlerConfig /> },
+        { path: ROUTES.USER, element: <User /> },
+        { path: ROUTES.PRODUCT, element: <Products /> },
         { path: 'blog', element: <Blog /> },
       ],
     },
     {
-      path: 'login',
+      path: ROUTES.LOGIN,
       element: <Login />,
     },
     {
-      path: 'register',
+      path: ROUTES.REGISTER,
       element: <Register />,
     },
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
+        { path: '/', element: <Navigate to={ROUTES.DASHBOARD_APP_PATH} /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

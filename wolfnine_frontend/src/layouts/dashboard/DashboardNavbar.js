@@ -9,6 +9,8 @@ import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
+import { useEffect } from 'react';
+import authService from '../../modules/auth/services/authService';
 
 // ----------------------------------------------------------------------
 
