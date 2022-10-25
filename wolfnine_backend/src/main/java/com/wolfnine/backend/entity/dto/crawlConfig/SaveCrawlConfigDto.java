@@ -1,10 +1,13 @@
 package com.wolfnine.backend.entity.dto.crawlConfig;
 
+import com.google.gson.Gson;
 import com.wolfnine.backend.entity.CrawlConfig;
+import com.wolfnine.backend.entity.Selector;
 import com.wolfnine.backend.entity.entityEnum.CrawlConfigStatus;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,19 +21,20 @@ public class SaveCrawlConfigDto {
     private String baseUrl;
     private CrawlConfigStatus status;
     @NotEmpty
-    private String selectors;
+    private List<Selector> selectors;
     @NotEmpty
-    private String selectorDetails;
+    private List<Selector> selectorDetails;
     @NotEmpty
     private String selectorList;
 
     public CrawlConfig toCrawlConfig() {
+        Gson gson = new Gson();
         return CrawlConfig.builder()
                 .name(name)
                 .selectorList(selectorList)
-                .selectorDetails(selectorDetails)
-                .status(status)
-                .selectors(selectors)
+                .selectorDetails(gson.toJson(selectorDetails))
+                .status(CrawlConfigStatus.ACTIVE)
+                .selectors(gson.toJson(selectors))
                 .baseUrl(baseUrl)
                 .build();
     }

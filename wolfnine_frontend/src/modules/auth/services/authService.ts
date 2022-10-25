@@ -2,6 +2,7 @@ import axios from 'axios';
 import { AccessTokenObject, LoginDataType, RegisterDataType, UserInfo } from '../types/authTypes';
 import { generateApiPath } from '../../../utils/generate';
 import jwtUtil from '../../../utils/jwtUtil';
+import { api } from '../../shared/services/api';
 
 export const API_ENDPOINTS = {
   REGISTER: '/users/register',
@@ -9,8 +10,8 @@ export const API_ENDPOINTS = {
   GET_AUTH_USER_INFO: '/users/my-info',
 };
 
-const ACCESS_TOKEN_KEY = 'access_token';
-const EXPIRED_AT_KEY = 'expired_at';
+export const ACCESS_TOKEN_KEY = 'access_token';
+export const EXPIRED_AT_KEY = 'expired_at';
 const USER_INFO_KEY = 'user_info';
 
 class AuthService {
@@ -20,7 +21,7 @@ class AuthService {
 
   login = async (data: LoginDataType) => {
     let result = {};
-    await axios
+    await api
       .post(generateApiPath(API_ENDPOINTS.LOGIN), data)
       .then((res) => {
         result = res;
@@ -36,19 +37,13 @@ class AuthService {
     return result;
   };
 
+  logout = () => {
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      localStorage.removeItem(EXPIRED_AT_KEY);
+  }
+
   getAuthUserInfo = async () => {
-    let result = {};
-    await axios
-      .get(generateApiPath(API_ENDPOINTS.GET_AUTH_USER_INFO), {
-        headers: {
-          Authorization: 'Bearer ' + this.getAccessToken(),
-        },
-      })
-      .then((res) => {
-        result = res;
-        this.setUserInfo(res.data.data);
-      });
-    return result;
+    return await api.get(generateApiPath(API_ENDPOINTS.GET_AUTH_USER_INFO));
   };
 
   getUserInfo = (): UserInfo => {

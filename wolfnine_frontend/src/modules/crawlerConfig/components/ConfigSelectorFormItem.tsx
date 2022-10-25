@@ -1,4 +1,4 @@
-import { Chip, Divider, FormHelperText, Stack } from '@mui/material';
+import { Chip, Divider, FormHelperText, Stack, Button } from '@mui/material';
 import * as React from 'react';
 import { RHFCheckbox, RHFTextField } from '../../../components/hook-form';
 import Box from '@mui/material/Box';
@@ -14,19 +14,30 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import CustomSelectBox from '../../../components/hook-form/CustomSelectBox';
+import CustomCheckBox from '../../../components/hook-form/CustomCheckBox';
+import Iconify from '../../../components/Iconify';
+import CustomTextField from '../../../components/hook-form/CustomTextField';
 
-const ConfigSelectorFormItem = ({ config, index, onChangeConfigItem, watch, arrayName }: any) => {
+const ConfigSelectorFormItem = ({ config, index, onChangeConfigItem, watch, arrayName, onRemoveConfigItem }: any) => {
     return (
         <>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Stack maxWidth={100} minWidth={50}>
                     <Chip label={index} color="primary" />
                 </Stack>
+                <Button
+                    variant="contained"
+                    color='error'
+                    startIcon={<Iconify icon="fluent:delete-20-filled" sx="" />}
+                    onClick={() => onRemoveConfigItem(config.id)}
+                >
+                    Delete
+                </Button>
             </Stack>
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <RHFTextField name={`${arrayName}[${index}].key`} label="Key" />
-                <RHFTextField name={`${arrayName}[${index}].selector`} label="Selector Value" />
+                <CustomTextField name={`${arrayName}[${index}].key`} label="Key" watch={watch} />
+                <CustomTextField name={`${arrayName}[${index}].selector`} label="Selector Value" watch={watch} />
             </Stack>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <CustomSelectBox
@@ -36,7 +47,7 @@ const ConfigSelectorFormItem = ({ config, index, onChangeConfigItem, watch, arra
                     firstOptionLabel="Choose Type" />
             </Stack>
             {
-                watch(`${arrayName}[${index}].type`) == SelectorType.GET_ATTRIBUTE && <RHFTextField name={`${arrayName}[${index}].attribute`} label="Attribute" />
+                watch(`${arrayName}[${index}].type`) == SelectorType.GET_ATTRIBUTE && <CustomTextField name={`${arrayName}[${index}].attribute`} label="Attribute" watch={watch} />
             }
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <CustomSelectBox
@@ -46,8 +57,8 @@ const ConfigSelectorFormItem = ({ config, index, onChangeConfigItem, watch, arra
                     firstOptionLabel="Choose Type" />
             </Stack>
             <FormGroup row>
-                <RHFCheckbox name={`${arrayName}[${index}].isLink`} label="Is URL" />
-                <RHFCheckbox name={`${arrayName}[${index}].isArray`} label="Is List" />
+                <CustomCheckBox name={`${arrayName}[${index}].isLink`} label="Is Url" />
+                <CustomCheckBox name={`${arrayName}[${index}].isArray`} label="Is List" />
             </FormGroup>
             <Divider />
         </>

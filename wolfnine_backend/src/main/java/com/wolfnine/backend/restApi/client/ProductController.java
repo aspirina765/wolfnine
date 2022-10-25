@@ -1,4 +1,4 @@
-package com.wolfnine.backend.restApi;
+package com.wolfnine.backend.restApi.client;
 
 import com.wolfnine.backend.entity.User;
 import com.wolfnine.backend.service.product.ProductService;
@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,17 +19,28 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductController {
     final ProductService productService;
-    final UserService userService;
 
     @GetMapping
     public ResponseEntity<?> findAllByAuthUser(
-            Authentication authentication
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "createdAt") String sortBy
     ) {
-        Optional<User> optionalUser = userService.findByUsername(authentication.getName());
-        if(optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return ResponseHandler.generateResponse(productService.findByUserId(user.getId()));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Permission denied !");
+        return ResponseHandler.generateResponse(productService.findAllByAuthUser(limit, page, sortBy));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable int id) {
+        return ResponseHandler.generateResponse(productService.findById(id));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteAllByIdIn(@RequestBody List<Long> ids) {
+        return ResponseHandler.generateResponse(productService.deleteAllByIdIn(ids));
+    }
+
+    @GetMapping("/{id}/delete")
+    public ResponseEntity<?> deleteById(@PathVariable long id) {
+        return ResponseHandler.generateResponse(productService.deleteById(id));
     }
 }

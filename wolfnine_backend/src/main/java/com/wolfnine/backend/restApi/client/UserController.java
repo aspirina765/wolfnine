@@ -1,4 +1,4 @@
-package com.wolfnine.backend.restApi;
+package com.wolfnine.backend.restApi.client;
 
 import com.wolfnine.backend.service.user.UserService;
 import com.wolfnine.backend.util.ResponseHandler;

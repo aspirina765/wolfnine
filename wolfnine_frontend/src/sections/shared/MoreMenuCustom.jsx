@@ -3,13 +3,23 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 import Iconify from '../../components/Iconify';
+import AlertCustom from './AlertCustom';
 // component
 
 // ----------------------------------------------------------------------
 
-export default function MoreMenuCustom() {
+export default function MoreMenuCustom({ item, onDeleteItem, editLink }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+
+  const handleDelete = () => {
+    setIsDelete(true);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDelete(false);
+  };
 
   return (
     <>
@@ -27,20 +37,27 @@ export default function MoreMenuCustom() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem onClick={handleDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:trash-2-outline" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }}>
+        <MenuItem component={RouterLink} to={editLink} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
+      <AlertCustom
+        isOpen={isDelete}
+        title="Confirmation delete"
+        message="Are you sure delete"
+        onClose={handleCancelDelete}
+        onAgree={() => onDeleteItem(item)}
+      />
     </>
   );
 }

@@ -18,6 +18,16 @@ const navConfig = [
     icon: getIcon('carbon:cloud-satellite-config'),
   },
   {
+    title: 'Crawler Categories',
+    path: ROUTES.CRAWLER_CATEGORY,
+    icon: getIcon('carbon:cloud-satellite-config'),
+  },
+  {
+    title: 'Crawler Products',
+    path: ROUTES.CRAWLER_PRODUCT,
+    icon: getIcon('carbon:cloud-satellite-config'),
+  },
+  {
     title: 'user',
     path: ROUTES.USER,
     icon: getIcon('eva:people-fill'),

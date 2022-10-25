@@ -1,5 +1,6 @@
 package com.wolfnine.backend.entity;
 
+import com.wolfnine.backend.specifications.entity.SearchCriteriaOperator;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,4 +24,15 @@ public class UserRole {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchCriteria {
+        private String key;
+        private SearchCriteriaOperator operator;
+        private Object value;
+    }
 }

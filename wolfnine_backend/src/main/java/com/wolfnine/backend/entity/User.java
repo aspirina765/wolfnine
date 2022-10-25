@@ -1,5 +1,6 @@
 package com.wolfnine.backend.entity;
 
+import com.wolfnine.backend.entity.dto.user.GetUserInfoDto;
 import com.wolfnine.backend.entity.entityEnum.UserStatus;
 import lombok.*;
 
@@ -30,4 +31,15 @@ public class User {
     private LocalDateTime deletedAt;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserRole> userRoles;
+
+    public GetUserInfoDto getUserInfoDto() {
+        return GetUserInfoDto.builder()
+                .email(email)
+                .name(name)
+                .id(id)
+                .phone(phone)
+                .status(status)
+                .userRoles(userRoles)
+                .build();
+    }
 }

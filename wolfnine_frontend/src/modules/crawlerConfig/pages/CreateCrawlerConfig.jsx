@@ -32,7 +32,7 @@ import { SelectorType } from '../types/crawlerConfigEnum';
 import { generateUUID } from '../../../utils/generate';
 import crawlerConfigService from '../services/crawlerConfigService';
 
-const selectorConfigInitial = {
+let selectorConfigInitial = {
   id: generateUUID(),
   key: '',
   selector: '',
@@ -112,6 +112,7 @@ const CreateCrawlerConfig = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     getValues,
+    setValue,
     watch,
   } = methods;
 
@@ -136,17 +137,31 @@ const CreateCrawlerConfig = () => {
   };
 
   const handleAddNewSelectorConfig = () => {
-    setSelectorConfigs((selectorConfigs) => [...selectorConfigs, selectorConfigInitial]);
+    setValue('selectors', [...getValues('selectors'), { ...selectorConfigInitial, id: generateUUID() }]);
   };
 
   const handleAddNewSelectorDetailsConfig = () => {
-    setSelectorDetailsConfigs((selectorConfigs) => [...selectorConfigs, selectorConfigInitial]);
+    setValue('selectorDetails', [...getValues('selectorDetails'), { ...selectorConfigInitial, id: generateUUID() }]);
   };
 
   const handleChangeSelectorConfigItem = (data) => {
     console.log('🚀 ~ file: CreateCrawlerConfig.jsx ~ line 96 ~ handleChangeSelectorConfigItem ~ data', data);
   };
 
+  const handleRemoveSelectorConfigItem = (id) => {
+    let configs = getValues('selectors');
+    configs = configs.filter((item) => {
+      return item.id !== id
+    })
+    console.log('check', configs);
+    setValue('selectors', configs);
+  };
+
+  const handleRemoveSelectorDetailsConfigItem = (id) => {
+    let configs = getValues('selectorDetails');
+    configs = configs.filter((item) => item.id !== id);
+    setValue('selectorDetails', configs);
+  };
   return (
     <Page title="Crawl Config">
       <Container maxWidth="xl">
@@ -191,7 +206,7 @@ const CreateCrawlerConfig = () => {
                 <Collapse in={openSelectorConfig} timeout="auto" unmountOnExit>
                   <Stack padding={5}>
                     <Stack spacing={2}>
-                      {selectorConfigs.map((config, index) => (
+                      {watch('selectors').map((config, index) => (
                         <ConfigSelectorFormItem
                           key={index}
                           config={config}
@@ -199,6 +214,7 @@ const CreateCrawlerConfig = () => {
                           onChangeConfigItem={handleChangeSelectorConfigItem}
                           watch={watch}
                           arrayName="selectors"
+                          onRemoveConfigItem={handleRemoveSelectorConfigItem}
                         />
                       ))}
                     </Stack>
@@ -228,7 +244,7 @@ const CreateCrawlerConfig = () => {
                 <Collapse in={openSelectorDetailsConfig} timeout="auto" unmountOnExit>
                   <Stack padding={5}>
                     <Stack spacing={2}>
-                      {selectorDetailsConfigs.map((config, index) => (
+                      {watch('selectorDetails').map((config, index) => (
                         <ConfigSelectorFormItem
                           key={index}
                           config={config}
@@ -236,6 +252,7 @@ const CreateCrawlerConfig = () => {
                           onChangeConfigItem={handleChangeSelectorConfigItem}
                           watch={watch}
                           arrayName="selectorDetails"
+                          onRemoveConfigItem={handleRemoveSelectorDetailsConfigItem}
                         />
                       ))}
                     </Stack>
@@ -246,7 +263,7 @@ const CreateCrawlerConfig = () => {
                 </Collapse>
               </List>
               <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-                Register
+                Submit
               </LoadingButton>
             </Stack>
           </FormProvider>

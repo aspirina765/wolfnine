@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wolfnine.backend.entity.User;
+import com.wolfnine.backend.entity.UserService;
 
 import java.util.Date;
 
@@ -68,6 +69,7 @@ public class JwtUtil {
                 .withIssuer(DEFAULT_ISSUER)
                 .withClaim(JwtUtil.ROLE_CLAIM_KEY, "ADMIN")
                 .withClaim("username", user.getUsername())
+                .withClaim("fullName", user.getName())
                 .withClaim("userId", user.getId())
                 .sign(getAlgorithm());
     }

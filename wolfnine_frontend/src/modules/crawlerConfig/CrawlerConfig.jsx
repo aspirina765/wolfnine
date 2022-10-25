@@ -66,6 +66,7 @@ function applySortFilter(array, comparator, query) {
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'baseUrl', label: 'Base Url', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
@@ -149,6 +150,12 @@ function CrawlerConfig() {
     setFilterName(event.target.value);
   };
 
+  const handleDeleteItem = async (item) => {
+    await crawlerConfigService.delete(item?.id).then((res) => {
+      getListCrawlerConfig();
+    });
+  };
+
   return (
     <Page title="Crawl Config">
       <Container maxWidth="xl">
@@ -184,6 +191,7 @@ function CrawlerConfig() {
                       <TableCell padding="checkbox">
                         <Checkbox checked={false} onChange={(event) => handleClick(event, 'Hello')} />
                       </TableCell>
+                      <TableCell align="left">{config.id}</TableCell>
                       <TableCell component="th" scope="row" padding="none">
                         <Stack direction="row" alignItems="center" spacing={2}>
                           <Avatar alt={config.name} src={''} />
@@ -200,7 +208,11 @@ function CrawlerConfig() {
                       </TableCell>
                       <TableCell align="left">{fDateTime(config.createdAt)}</TableCell>
                       <TableCell align="right">
-                        <MoreMenuCustom />
+                        <MoreMenuCustom
+                          item={config}
+                          onDeleteItem={handleDeleteItem}
+                          editLink={`/crawler-configs/${config?.id}/edit`}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}

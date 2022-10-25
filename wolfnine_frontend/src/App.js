@@ -5,18 +5,16 @@ import ThemeProvider from './theme';
 // components
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
-import AuthProvider from './modules/auth/contexts/authProvider';
+import './modules/shared/styles/global.scss';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <ScrollToTop />
-        <BaseOptionChartStyle />
-        <Router />
-      </ThemeProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <ScrollToTop />
+      <BaseOptionChartStyle />
+      <Router />
+    </ThemeProvider>
   );
 }

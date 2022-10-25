@@ -12,6 +12,7 @@ import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 import authService from '../../../modules/auth/services/authService';
 import { useAuth } from '../../../modules/auth/contexts/authProvider';
+import { ROUTES } from '../../../constants/routerConfig';
 
 // ----------------------------------------------------------------------
 
@@ -19,8 +20,6 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const { setToken } = useAuth();
 
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
@@ -50,8 +49,7 @@ export default function LoginForm() {
         password: data.password,
       })
       .then((res) => {
-        setToken(res.data.data.accessToken);
-        navigate('/dashboard/app', { replace: true });
+        navigate(ROUTES.DASHBOARD_APP_PATH, { replace: true });
       });
   };
 

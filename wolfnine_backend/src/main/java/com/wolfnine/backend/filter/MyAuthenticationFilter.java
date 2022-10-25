@@ -1,12 +1,15 @@
 package com.wolfnine.backend.filter;
 
 import com.google.gson.Gson;
+import com.wolfnine.backend.entity.UserService;
 import com.wolfnine.backend.entity.auth.Credential;
 import com.wolfnine.backend.entity.dto.UserLoginDto;
+import com.wolfnine.backend.service.user.UserServiceV1;
 import com.wolfnine.backend.util.JwtUtil;
 import com.wolfnine.backend.util.ResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

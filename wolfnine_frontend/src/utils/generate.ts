@@ -11,3 +11,8 @@ export const generateUUID = (): string => {
   });
   return uuid;
 };
+
+export const generateRouteWithParam = (route: string, replace: string, value: any) => {
+  return route.replace(replace, value);
+};
+

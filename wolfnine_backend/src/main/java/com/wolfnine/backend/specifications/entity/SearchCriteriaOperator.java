@@ -1,4 +1,4 @@
-package com.t2009m1.spring_ecommerce.entity.search;
+package com.wolfnine.backend.specifications.entity;
 
 public enum SearchCriteriaOperator {
     EQUALS, NOT_EQUALS,
