@@ -1,6 +1,10 @@
 package com.wolfnine.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.wolfnine.backend.entity.base.BaseEntity;
 import com.wolfnine.backend.entity.entityEnum.CrawlConfigStatus;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -18,7 +22,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "crawl_configs")
-public class CrawlConfig {
+public class CrawlConfig extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -35,11 +39,7 @@ public class CrawlConfig {
     @JsonRawValue
     private String selectorDetails;
     private long userId;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
+    @JsonBackReference
     @OneToMany(mappedBy = "crawlConfig", fetch = FetchType.LAZY)
     private List<CrawlCategory> crawlCategories;
 }

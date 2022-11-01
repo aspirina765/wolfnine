@@ -1,18 +1,21 @@
 package com.wolfnine.backend.service.user;
 
+import com.github.dockerjava.api.exception.UnauthorizedException;
 import com.wolfnine.backend.entity.User;
 import com.wolfnine.backend.entity.auth.Credential;
 import com.wolfnine.backend.entity.dto.UserLoginDto;
 import com.wolfnine.backend.entity.dto.UserRegisterDto;
+import com.wolfnine.backend.entity.dto.user.GetUserInfoDto;
 import com.wolfnine.backend.entity.entityEnum.UserStatus;
 import com.wolfnine.backend.repository.UserRepository;
 import com.wolfnine.backend.util.JwtUtil;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -89,5 +92,16 @@ public class UserServiceV1 implements UserService{
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ADMIN");
         grantedAuthorityList.add(simpleGrantedAuthority);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorityList);
+    }
+
+    @Override
+    public GetUserInfoDto findByAuthUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            Optional<User> optionalUser = userRepository.findUserByUsername(currentUserName);
+            return optionalUser.get().getUserInfoDto();
+        }
+        throw new UnauthorizedException("Unauthorized");
     }
 }

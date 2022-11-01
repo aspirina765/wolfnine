@@ -10,34 +10,62 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
+import ProtectedRoute from './modules/auth/contexts/protectedRoute';
+import { ROUTES } from './constants/routerConfig';
+import CrawlerConfig from './modules/crawlerConfig/CrawlerConfig';
+import CreateCrawlerConfig from './modules/crawlerConfig/pages/CreateCrawlerConfig';
+import CrawlerCategory from './modules/crawlerCategory/CrawlerCategory';
+import CreateCrawlerCategory from './modules/crawlerCategory/pages/CreateCrawlerCategory';
+import CrawlerProduct from './modules/product/CrawlerProduct';
+import EditCrawlerConfig from './modules/crawlerConfig/pages/EditCrawlerConfig';
+import EditCrawlerCategory from './modules/crawlerCategory/pages/EditCrawlerCategory';
+import AuthProvider from './modules/auth/contexts/authProvider';
+import EditCrawlerProduct from './modules/product/pages/EditCrawlerProduct';
+import ShopeeShopConfig from './modules/shopeeShopConfig/ShopeeShopConfig';
+import ShopeeAuth from './modules/shopeeShopConfig/pages/ShopeeAuth';
+import PushProductApi from './modules/pushProductApi/PushProductApi';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
-      element: <DashboardLayout />,
+      path: ROUTES.DASHBOARD_PARENT,
+      element: (
+        <AuthProvider>
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        </AuthProvider>
+      ),
       children: [
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: ROUTES.DASHBOARD_APP_PATH, element: <DashboardApp /> },
+        { path: ROUTES.CRAWLER_CONFIGS, element: <CrawlerConfig /> },
+        { path: ROUTES.CREATE_CRAWLER_CONFIG, element: <CreateCrawlerConfig /> },
+        { path: ROUTES.EDIT_CRAWLER_CONFIG, element: <EditCrawlerConfig /> },
+        { path: ROUTES.CRAWLER_CATEGORY, element: <CrawlerCategory /> },
+        { path: ROUTES.CREATE_CRAWLER_CATEGORY, element: <CreateCrawlerCategory /> },
+        { path: ROUTES.EDIT_CRAWLER_CATEGORY, element: <EditCrawlerCategory /> },
+        { path: ROUTES.CRAWLER_PRODUCT, element: <CrawlerProduct /> },
+        { path: ROUTES.EDIT_CRAWLER_PRODUCT, element: <EditCrawlerProduct /> },
+        { path: ROUTES.SHOPEE_SHOP_CONFIG, element: <ShopeeShopConfig /> },
+        { path: ROUTES.SHOPEE_AUTH, element: <ShopeeAuth /> },
+        { path: ROUTES.PUSH_PRODUCT_API, element: <PushProductApi /> },
       ],
     },
     {
-      path: 'login',
+      path: ROUTES.LOGIN,
       element: <Login />,
     },
     {
-      path: 'register',
+      path: ROUTES.REGISTER,
       element: <Register />,
     },
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
+        { path: '/', element: <Navigate to={ROUTES.DASHBOARD_APP_PATH} /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

@@ -7,6 +7,8 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
 import account from '../../_mock/account';
+import authService from '../../modules/auth/services/authService';
+import { useAuth } from '../../modules/auth/contexts/authProvider';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +36,7 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
 
   const [open, setOpen] = useState(null);
+  const { setToken } = useAuth();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -41,6 +44,11 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setToken(null);
   };
 
   return (
@@ -101,7 +109,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </MenuPopover>

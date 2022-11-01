@@ -10,6 +10,9 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+import authService from '../../../modules/auth/services/authService';
+import { useAuth } from '../../../modules/auth/contexts/authProvider';
+import { ROUTES } from '../../../constants/routerConfig';
 
 // ----------------------------------------------------------------------
 
@@ -19,12 +22,12 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required'),
   });
 
   const defaultValues = {
-    email: '',
+    username: '',
     password: '',
     remember: true,
   };
@@ -39,14 +42,21 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+  const onSubmit = async (data) => {
+    await authService
+      .login({
+        username: data.username,
+        password: data.password,
+      })
+      .then((res) => {
+        navigate(ROUTES.DASHBOARD_APP_PATH, { replace: true });
+      });
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="username" label="Username" />
 
         <RHFTextField
           name="password"

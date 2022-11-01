@@ -1,4 +1,4 @@
-package com.wolfnine.backend.restApi;
+package com.wolfnine.backend.restApi.client;
 
 import com.wolfnine.backend.entity.dto.crawlConfig.SaveCrawlConfigDto;
 import com.wolfnine.backend.service.crawlConfig.CrawlConfigService;
@@ -11,14 +11,18 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/v1/crawler/configs")
-@CrossOrigin("*")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class CrawlConfigController {
     private final CrawlConfigService crawlConfigService;
 
     @GetMapping
-    public ResponseEntity<?> findAllByAuthUser() {
-        return ResponseHandler.generateResponse(crawlConfigService.findByAuthUser());
+    public ResponseEntity<?> findAllByAuthUser(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ) {
+        return ResponseHandler.generateResponse(crawlConfigService.findByAuthUser(limit, page, sortBy));
     }
 
     @GetMapping("/{id}")
@@ -31,13 +35,13 @@ public class CrawlConfigController {
         return ResponseHandler.generateResponse(crawlConfigService.save(saveCrawlConfigDto));
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestBody SaveCrawlConfigDto saveCrawlConfigDto) {
         return ResponseHandler.generateResponse(crawlConfigService.update(id, saveCrawlConfigDto));
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping("/{id}/delete")
     public ResponseEntity<?> delete(@PathVariable long id) {
-        return ResponseEntity.ok().build();
+        return ResponseHandler.generateResponse(crawlConfigService.delete(id));
     }
 }

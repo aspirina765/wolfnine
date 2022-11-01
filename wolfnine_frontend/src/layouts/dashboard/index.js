@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { ToastContainer } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ export default function DashboardLayout() {
       <MainStyle>
         <Outlet />
       </MainStyle>
+      <ToastContainer />
     </RootStyle>
   );
 }
