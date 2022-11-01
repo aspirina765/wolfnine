@@ -68,9 +68,10 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeHttpRequests().antMatchers("/api/v1/users/register").permitAll();
         http.authorizeHttpRequests()
                 .antMatchers(
-                        "/api/v1/products",
+                        "/api/v1/products/**",
                         "/api/v1/crawler/**",
                         "/api/v1/shopeeShopConfigs/**",
+                        "/api/v1/pushProductApis/**",
                         "/api/v1/users/my-info"
                 )
                 .hasAnyAuthority("USER", "ADMIN");

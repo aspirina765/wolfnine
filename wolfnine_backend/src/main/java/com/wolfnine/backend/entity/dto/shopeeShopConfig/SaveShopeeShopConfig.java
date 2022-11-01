@@ -25,7 +25,7 @@ public class SaveShopeeShopConfig {
 
     public ShopeeShopConfig toShopeeShopConfig() {
         return ShopeeShopConfig.builder()
-                . name(name)
+                .name(name)
                 .shopId(shopId)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

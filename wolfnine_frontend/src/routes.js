@@ -21,6 +21,9 @@ import EditCrawlerConfig from './modules/crawlerConfig/pages/EditCrawlerConfig';
 import EditCrawlerCategory from './modules/crawlerCategory/pages/EditCrawlerCategory';
 import AuthProvider from './modules/auth/contexts/authProvider';
 import EditCrawlerProduct from './modules/product/pages/EditCrawlerProduct';
+import ShopeeShopConfig from './modules/shopeeShopConfig/ShopeeShopConfig';
+import ShopeeAuth from './modules/shopeeShopConfig/pages/ShopeeAuth';
+import PushProductApi from './modules/pushProductApi/PushProductApi';
 
 // ----------------------------------------------------------------------
 
@@ -45,9 +48,9 @@ export default function Router() {
         { path: ROUTES.EDIT_CRAWLER_CATEGORY, element: <EditCrawlerCategory /> },
         { path: ROUTES.CRAWLER_PRODUCT, element: <CrawlerProduct /> },
         { path: ROUTES.EDIT_CRAWLER_PRODUCT, element: <EditCrawlerProduct /> },
-        { path: ROUTES.USER, element: <User /> },
-        { path: ROUTES.PRODUCT, element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: ROUTES.SHOPEE_SHOP_CONFIG, element: <ShopeeShopConfig /> },
+        { path: ROUTES.SHOPEE_AUTH, element: <ShopeeAuth /> },
+        { path: ROUTES.PUSH_PRODUCT_API, element: <PushProductApi /> },
       ],
     },
     {

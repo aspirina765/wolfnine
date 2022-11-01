@@ -23,6 +23,7 @@ const AuthProvider = ({ children }) => {
         setUser(res.data?.data);
       })
       .catch((err) => {
+        navigate(ROUTES.LOGIN);
       });
   };
 

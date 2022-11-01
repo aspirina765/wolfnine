@@ -12,6 +12,8 @@ export const ROUTES = {
     CREATE_CRAWLER_CATEGORY: '/crawler-categories/create',
     CRAWLER_PRODUCT: '/crawler/products',
     EDIT_CRAWLER_PRODUCT: '/crawler/products/:id/edit',
-    USER: '/user',
-    PRODUCT: '/product'
+    SHOPEE_SHOP_CONFIG: '/shopee-shop-configs',
+    SHOPEE_AUTH: '/shopee/auth',
+    PUSH_PRODUCT_API: '/push-product-apis',
+    EDIT_PRODUCT_API: '/push-product-apis/:id',
 }

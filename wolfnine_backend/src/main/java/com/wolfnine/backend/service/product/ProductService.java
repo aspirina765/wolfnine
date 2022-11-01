@@ -2,6 +2,8 @@ package com.wolfnine.backend.service.product;
 
 import com.wolfnine.backend.entity.Product;
 import com.wolfnine.backend.entity.dto.ProductDto;
+import com.wolfnine.backend.entity.dto.pushProductApiConfig.PushProductToApi;
+import com.wolfnine.backend.entity.dto.shopeeShopConfig.PushProductToShopeeShop;
 import com.wolfnine.backend.entity.entityEnum.ProductStatus;
 import org.springframework.data.domain.Page;
 
@@ -17,4 +19,6 @@ public interface ProductService {
     Product update(long id, Product product);
     boolean deleteAllByIdIn(List<Long> ids);
     boolean deleteById(long id);
+    boolean pushProductToShopeeShop(PushProductToShopeeShop pushProductToShopeeShop);
+    boolean pushProductToApi(PushProductToApi pushProductToApi);
 }

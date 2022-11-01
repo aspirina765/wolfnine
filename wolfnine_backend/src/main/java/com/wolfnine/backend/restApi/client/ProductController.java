@@ -1,6 +1,8 @@
 package com.wolfnine.backend.restApi.client;
 
 import com.wolfnine.backend.entity.User;
+import com.wolfnine.backend.entity.dto.pushProductApiConfig.PushProductToApi;
+import com.wolfnine.backend.entity.dto.shopeeShopConfig.PushProductToShopeeShop;
 import com.wolfnine.backend.service.product.ProductService;
 import com.wolfnine.backend.service.user.UserService;
 import com.wolfnine.backend.util.ResponseHandler;
@@ -42,5 +44,19 @@ public class ProductController {
     @GetMapping("/{id}/delete")
     public ResponseEntity<?> deleteById(@PathVariable long id) {
         return ResponseHandler.generateResponse(productService.deleteById(id));
+    }
+
+    @PostMapping("/pushToShopee")
+    public ResponseEntity<?> pushItemsToShopeeShop( @Valid @RequestBody PushProductToShopeeShop pushProductToShopeeShop) {
+        boolean result = productService.pushProductToShopeeShop(pushProductToShopeeShop);
+        if(result) {
+            return ResponseHandler.generateResponse(productService.pushProductToShopeeShop(pushProductToShopeeShop));
+        }
+        return ResponseHandler.generateResponse(productService.pushProductToShopeeShop(pushProductToShopeeShop), "", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping("/pushToApi")
+    public ResponseEntity<?> pushItemsToApi(@Valid @RequestBody PushProductToApi pushProductToApi) {
+        return ResponseHandler.generateResponse(productService.pushProductToApi(pushProductToApi));
     }
 }

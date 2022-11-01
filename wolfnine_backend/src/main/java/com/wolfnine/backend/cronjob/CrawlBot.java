@@ -110,8 +110,8 @@ public class CrawlBot {
         Thread.sleep(5000);
     }
 
-//    @Async
-//    @Scheduled(fixedRate = 1000 * 5)
+    @Async
+    @Scheduled(fixedRate = 1000 * 5)
     public void crawlDetails() throws InterruptedException{
         System.out.println("Begin crawl details ...");
         List<Product> products = productService.findAllByStatus(ProductStatus.PENDING);
@@ -120,7 +120,7 @@ public class CrawlBot {
             driver.get(product.getLink());
             JsonParser parser = new JsonParser();
             JsonArray attributeArray = parser.parse(product.getCrawlCategory().getCrawlConfig().getSelectorDetails()).getAsJsonArray();
-            JsonObject productAttributes = parser.parse(product.getAttributes()).getAsJsonObject();
+            JsonArray productAttributes = parser.parse(product.getAttributes()).getAsJsonArray();
             for(JsonElement attrElm : attributeArray) {
                 JsonObject attribute = attrElm.getAsJsonObject();
                 IsArray isArray = IsArray.of(attribute.get(CrawlConstant.CONFIG_KEY_IS_ARRAY).getAsInt());
@@ -129,31 +129,53 @@ public class CrawlBot {
                     JsonArray elmValueArray = new JsonArray();
                     for(WebElement element : elements) {
                         SelectorType selectorType = SelectorType.of(attribute.get(CrawlConstant.CONFIG_SELECTOR_TYPE).getAsInt());
-                        String elmValue = selectorType == SelectorType.GET_TEXT
-                                ? element.getText()
-                                : selectorType == SelectorType.GET_ATTRIBUTE
-                                ? element.getAttribute(attribute.get(CrawlConstant.CONFIG_SELECTOR_ATTRIBUTE).getAsString())
-                                : "";
+                        String elmValue = "";
+                        switch (selectorType) {
+                            case GET_TEXT:
+                                elmValue = element.getText();
+                                break;
+                            case GET_ATTRIBUTE:
+                                elmValue = element.getAttribute(attribute.get(CrawlConstant.CONFIG_SELECTOR_ATTRIBUTE).getAsString());
+                                break;
+                            case GET_HTML_CONTENT:
+                                elmValue = element.getAttribute("innerHTML");
+                                break;
+                            default:
+                                break;
+                        }
                         elmValueArray.add(elmValue);
                     }
                     JsonObject elmValueObject = new JsonObject();
                     CrawlDataType elmValueType = CrawlDataType.of(attribute.get(CrawlConstant.CONFIG_KEY_DATA_TYPE).getAsInt());
                     elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_TYPE, elmValueType.getValue());
                     elmValueObject.addProperty(CrawlConstant.CONFIG_KEY_ITEM_VALUE, elmValueArray.toString());
-                    productAttributes.add(attribute.get(CrawlConstant.CONFIG_SELECTOR_KEY).getAsString(), elmValueObject);
+                    elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_KEY, attribute.get(CrawlConstant.CONFIG_SELECTOR_KEY).getAsString());
+                    productAttributes.add(elmValueObject);
                 }else {
                     WebElement elm = driver.findElement(By.cssSelector(attribute.get(CrawlConstant.CONFIG_SELECTOR_VALUE).getAsString()));
                     SelectorType selectorType = SelectorType.of(attribute.get(CrawlConstant.CONFIG_SELECTOR_TYPE).getAsInt());
-                    String elmValue = selectorType == SelectorType.GET_TEXT
-                            ? elm.getText()
-                            : selectorType == SelectorType.GET_ATTRIBUTE
-                            ? elm.getAttribute(attribute.get(CrawlConstant.CONFIG_SELECTOR_ATTRIBUTE).getAsString())
-                            : "";
+                    String elmValue = "";
+                    System.out.println("Selector Type " + selectorType);
+                    switch (selectorType) {
+                        case GET_TEXT:
+                            elmValue = elm.getText();
+                            System.out.println("Text " + elmValue);
+                            break;
+                        case GET_ATTRIBUTE:
+                            elmValue = elm.getAttribute(attribute.get(CrawlConstant.CONFIG_SELECTOR_ATTRIBUTE).getAsString());
+                            break;
+                        case GET_HTML_CONTENT:
+                            elmValue = elm.getAttribute("innerHTML");
+                            break;
+                        default:
+                            break;
+                    }
                     JsonObject elmValueObject = new JsonObject();
                     CrawlDataType elmValueType = CrawlDataType.of(attribute.get(CrawlConstant.CONFIG_KEY_DATA_TYPE).getAsInt());
                     elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_TYPE, elmValueType.getValue());
                     elmValueObject.addProperty(CrawlConstant.CONFIG_KEY_ITEM_VALUE, elmValue);
-                    productAttributes.add(attribute.get(CrawlConstant.CONFIG_SELECTOR_KEY).getAsString(), elmValueObject);
+                    elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_KEY, attribute.get(CrawlConstant.CONFIG_SELECTOR_KEY).getAsString());
+                    productAttributes.add(elmValueObject);
                 }
             }
             product.setStatus(ProductStatus.CRAWLED);
