@@ -8,6 +8,7 @@ import palette from './palette';
 import typography from './typography';
 import componentsOverride from './overrides';
 import shadows, { customShadows } from './shadows';
+import { ToastContainer } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +36,7 @@ export default function ThemeProvider({ children }) {
       <MUIThemeProvider theme={theme}>
         <CssBaseline />
         {children}
+        <ToastContainer />
       </MUIThemeProvider>
     </StyledEngineProvider>
   );
