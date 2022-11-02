@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hoo
 import authService from '../../../modules/auth/services/authService';
 import { useAuth } from '../../../modules/auth/contexts/authProvider';
 import { ROUTES } from '../../../constants/routerConfig';
+import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +38,29 @@ export default function LoginForm() {
     defaultValues,
   });
 
+  useEffect(() => {
+    checkLogged();
+  }, []);
+
+  const checkLogged = async () => {
+    let isLogged = false;
+
+    await authService
+      .getAuthUserInfo()
+      .then((res) => {
+        if (res?.data) {
+          console.log('🚀 ~ file: LoginForm.js ~ line 50 ~ .then ~ res', res);
+          isLogged = true;
+        }
+      })
+      .catch((err) => {});
+
+    if (isLogged) {
+      console.log('🚀 ~ file: LoginForm.js ~ line 54 ~ checkLogged ~ isLogged', isLogged);
+      navigate(ROUTES.DASHBOARD_APP_PATH, { replace: true });
+    }
+  };
+
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -49,7 +73,18 @@ export default function LoginForm() {
         password: data.password,
       })
       .then((res) => {
+        if (!res) {
+          throw 'error';
+        }
+        toast.success('Login successfully !', {
+          position: toast.POSITION.TOP_CENTER,
+        });
         navigate(ROUTES.DASHBOARD_APP_PATH, { replace: true });
+      })
+      .catch((err) => {
+        toast.error('Login failed !', {
+          position: toast.POSITION.TOP_CENTER,
+        });
       });
   };
 
