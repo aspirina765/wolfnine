@@ -44,12 +44,12 @@ public class CrawlBot {
     private ProductService productService;
 
     public CrawlBot() throws IOException {
-//        WebDriverManager.chromedriver()
-//                .setup();
-        service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File("/usr/local/bin/chromedriver.exe"))
-                .usingAnyFreePort()
-                .build();
+        WebDriverManager.chromedriver()
+                .setup();
+//        service = new ChromeDriverService.Builder()
+//                .usingDriverExecutable(new File("/usr/local/bin/chromedriver.exe"))
+//                .usingAnyFreePort()
+//                .build();
         service.start();
         options = new ChromeOptions().setHeadless(true);
     }
@@ -57,8 +57,8 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
-        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
-//        WebDriver driver = new ChromeDriver();
+//        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
+        WebDriver driver = new ChromeDriver();
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
         List<Product> products = new ArrayList<>();
@@ -131,8 +131,8 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlDetails() throws InterruptedException{
-        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
-//        WebDriver driver = new ChromeDriver();
+//        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
+        WebDriver driver = new ChromeDriver();
         System.out.println("Begin crawl details ...");
         List<Product> products = productService.findAllByStatus(ProductStatus.PENDING);
         for(Product product : products) {
