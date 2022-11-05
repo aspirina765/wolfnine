@@ -25,17 +25,17 @@ public class WolfnineBackendApplication {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/api/v1/**")
-//                        .allowedOrigins("*")
-//                        .allowedMethods("*");
-//            }
-//        };
-//    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/v1/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("*");
+            }
+        };
+    }
 //
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {
