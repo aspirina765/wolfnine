@@ -34,6 +34,8 @@ import { fDateTime } from '../../utils/formatTime';
 import { ROUTES } from '../../constants/routerConfig';
 import crawlerCategoryService from './services/CrawlerCategoryService';
 import { generateRouteWithParam } from '../../utils/generate';
+import TableLoading from '../shared/components/TableLoading';
+import CrawlerCategoryToolbar from './components/CrawlerCategoryToolbar';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -101,12 +103,11 @@ const CrawlerCategory = () => {
         sortBy: 'createdAt',
       })
       .then((res) => {
-        setListData(res.data.data);
-        console.log('🚀 ~ file: CrawlerCategory.jsx ~ line 102 ~ .then ~ res.data.data', res.data.data);
+        if (res?.data?.data) {
+          setListData(res?.data?.data);
+        }
       })
-      .catch((err) => {
-        console.log('🚀 ~ file: CrawlerCategory.jsx ~ line 105 ~ getListData ~ err', err);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -121,7 +122,7 @@ const CrawlerCategory = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = listData?.content?.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -179,6 +180,7 @@ const CrawlerCategory = () => {
           </Button>
         </Stack>
         <Card>
+          <CrawlerCategoryToolbar numSelected={selected?.length} />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -186,16 +188,21 @@ const CrawlerCategory = () => {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={listData.length}
+                  rowCount={listData?.content?.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
+                  {!listData?.content && <TableLoading />}
+
                   {listData?.content?.map((config, index) => (
                     <TableRow hover key={index} tabIndex={-1} role="checkbox" selected={false} aria-checked={false}>
                       <TableCell padding="checkbox">
-                        <Checkbox checked={false} onChange={(event) => handleClick(event, 'Hello')} />
+                        <Checkbox
+                          checked={selected.indexOf(config?.id) !== -1}
+                          onChange={(event) => handleClick(event, config?.id)}
+                        />
                       </TableCell>
                       <TableCell align="left">{config.id}</TableCell>
                       <TableCell component="th" scope="row">

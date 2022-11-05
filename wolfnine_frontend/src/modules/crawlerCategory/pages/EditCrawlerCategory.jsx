@@ -24,12 +24,14 @@ import crawlerConfigService from '../../crawlerConfig/services/crawlerConfigServ
 import crawlerCategoryService from '../services/CrawlerCategoryService';
 import { checkArrayHasIndex } from '../../../utils/helper';
 import { setDate } from 'date-fns/esm';
+import SkeletonLoadingV1 from '../../shared/components/SkeletonLoadingV1';
 
 const EditCrawlerCategory = () => {
   const navigate = useNavigate();
   const [crawlConfigs, setCrawlConfigs] = useState({});
   const { id } = useParams();
   const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const RegisterSchema = Yup.object().shape({
     name: Yup.string().required('Name required'),
@@ -63,12 +65,12 @@ const EditCrawlerCategory = () => {
 
   const getDetailsData = async () => {
     await crawlerCategoryService.findById(id).then((res) => {
-      console.log('🚀 ~ file: EditCrawlerCategory.jsx ~ line 65 ~ getDetailsData ~ res.data.data', res.data.data);
       setValue('name', res.data.data?.name);
       setValue('link', res.data.data?.link);
       setValue('status', res.data.data?.status);
       setValue('crawlConfigId', res.data.data?.crawlConfigId);
       setData(res.data.data);
+      setIsLoading(false);
     });
   };
 
@@ -86,9 +88,7 @@ const EditCrawlerCategory = () => {
       .then((res) => {
         navigate(ROUTES.CRAWLER_CATEGORY, { replace: true });
       })
-      .catch((err) => {
-        console.log('🚀 ~ file: EditCrawlerCategory.jsx ~ line 74 ~ onSubmit ~ err', err);
-      });
+      .catch((err) => {});
   };
 
   return (
@@ -108,30 +108,34 @@ const EditCrawlerCategory = () => {
           </Button>
         </Stack>
         <Card sx={{ padding: '2rem' }}>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={3}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <RHFTextField name="name" label="Name" />
-                <RHFTextField name="link" label="Link" />
+          {isLoading ? (
+            <SkeletonLoadingV1 />
+          ) : (
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={3}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <RHFTextField name="name" label="Name" />
+                  <RHFTextField name="link" label="Link" />
+                </Stack>
+                <CustomAutoComplete
+                  name="crawlConfigId"
+                  label="Crawl Config ID"
+                  options={crawlConfigs?.content}
+                  setOptionLabel={(option) => option.name}
+                  defaultValue={data?.crawlConfig}
+                />
+                <CustomSelectBox
+                  enumType={CrawlerCategoryEnum}
+                  name="status"
+                  label="Status"
+                  firstOptionLabel="Choose status"
+                />
+                <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+                  Submit
+                </LoadingButton>
               </Stack>
-              <CustomAutoComplete
-                name="crawlConfigId"
-                label="Crawl Config ID"
-                options={crawlConfigs?.content}
-                setOptionLabel={(option) => option.name}
-                defaultValue={data?.crawlConfig}
-              />
-              <CustomSelectBox
-                enumType={CrawlerCategoryEnum}
-                name="status"
-                label="Status"
-                firstOptionLabel="Choose status"
-              />
-              <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-                Submit
-              </LoadingButton>
-            </Stack>
-          </FormProvider>
+            </FormProvider>
+          )}
         </Card>
       </Container>
     </Page>

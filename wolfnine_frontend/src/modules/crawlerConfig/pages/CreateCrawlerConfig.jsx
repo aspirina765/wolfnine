@@ -31,6 +31,8 @@ import ConfigSelectorFormItem from '../components/ConfigSelectorFormItem';
 import { SelectorType } from '../types/crawlerConfigEnum';
 import { generateUUID } from '../../../utils/generate';
 import crawlerConfigService from '../services/crawlerConfigService';
+import CustomSelectBoxV2 from '../../../components/hook-form/CustomSelectBoxV2';
+import crawlerConfigTemplateService from '../../crawlerConfigTemplate/services/CrawlerConfigTemplateService';
 
 let selectorConfigInitial = {
   id: generateUUID(),
@@ -50,8 +52,10 @@ const CreateCrawlerConfig = () => {
   const [openSelectorConfig, setOpenSelectorConfig] = React.useState(true);
   const [openSelectorDetailsConfig, setOpenSelectorDetailsConfig] = React.useState(true);
   const navigate = useNavigate();
+  const [templates, setTemplates] = useState([]);
 
   const RegisterSchema = Yup.object().shape({
+    templateId: Yup.number(),
     name: Yup.string().required('Name required'),
     baseUrl: Yup.string().required('Base URL required'),
     selectorList: Yup.string().required('Selector list is required'),
@@ -96,6 +100,7 @@ const CreateCrawlerConfig = () => {
   });
 
   const defaultValues = {
+    templateId: 0,
     name: '',
     baseUrl: '',
     selectorList: '',
@@ -116,16 +121,29 @@ const CreateCrawlerConfig = () => {
     watch,
   } = methods;
 
+  useEffect(() => {
+    getCrawlConfigTemplateList();
+  }, []);
+
+  useEffect(() => {
+    const configTemplate = templates.find((item) => item.id == getValues('templateId'));
+    setValue('selectors', configTemplate?.selectors ?? []);
+    setValue('selectorDetails', configTemplate?.selectorDetails ?? []);
+  }, [watch('templateId')]);
+
+  const getCrawlConfigTemplateList = async () => {
+    await crawlerConfigTemplateService.findAllAuthUser().then((res) => {
+      setTemplates(res.data?.data);
+    });
+  };
+
   const onSubmit = async (data) => {
-    console.log('🚀 ~ file: CreateCrawlerConfig.jsx ~ line 83 ~ onSubmit ~ data', data);
     await crawlerConfigService
       .create(data)
       .then((res) => {
         navigate(ROUTES.CRAWLER_CONFIGS, { replace: true });
       })
-      .catch((err) => {
-        console.log('🚀 ~ file: CreateCrawlerConfig.jsx ~ line 124 ~ onSubmit ~ err', err);
-      });
+      .catch((err) => {});
   };
 
   const handleToggleSelectorConfigs = () => {
@@ -151,8 +169,8 @@ const CreateCrawlerConfig = () => {
   const handleRemoveSelectorConfigItem = (id) => {
     let configs = getValues('selectors');
     configs = configs.filter((item) => {
-      return item.id !== id
-    })
+      return item.id !== id;
+    });
     console.log('check', configs);
     setValue('selectors', configs);
   };
@@ -181,6 +199,14 @@ const CreateCrawlerConfig = () => {
         <Card sx={{ padding: '2rem' }}>
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={3}>
+              <CustomSelectBoxV2
+                items={templates}
+                itemKey="id"
+                itemLabel="name"
+                name="templateId"
+                label="Template"
+                firstOptionLabel="Select template"
+              />
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <RHFTextField name="name" label="Name" />
                 <RHFTextField name="baseUrl" label="Base URL" />

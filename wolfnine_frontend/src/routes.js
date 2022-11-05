@@ -12,18 +12,23 @@ import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import ProtectedRoute from './modules/auth/contexts/protectedRoute';
 import { ROUTES } from './constants/routerConfig';
-import CrawlerConfig from './modules/crawlerConfig/CrawlerConfig';
-import CreateCrawlerConfig from './modules/crawlerConfig/pages/CreateCrawlerConfig';
-import CrawlerCategory from './modules/crawlerCategory/CrawlerCategory';
-import CreateCrawlerCategory from './modules/crawlerCategory/pages/CreateCrawlerCategory';
-import CrawlerProduct from './modules/product/CrawlerProduct';
-import EditCrawlerConfig from './modules/crawlerConfig/pages/EditCrawlerConfig';
-import EditCrawlerCategory from './modules/crawlerCategory/pages/EditCrawlerCategory';
 import AuthProvider from './modules/auth/contexts/authProvider';
-import EditCrawlerProduct from './modules/product/pages/EditCrawlerProduct';
-import ShopeeShopConfig from './modules/shopeeShopConfig/ShopeeShopConfig';
 import ShopeeAuth from './modules/shopeeShopConfig/pages/ShopeeAuth';
-import PushProductApi from './modules/pushProductApi/PushProductApi';
+import { lazy } from 'react';
+
+// ----------------------------------------------------------------------
+
+const CrawlerConfig = lazy(() => import('./modules/crawlerConfig/CrawlerConfig'))
+const CreateCrawlerConfig = lazy(() => import('./modules/crawlerConfig/pages/CreateCrawlerConfig'))
+const EditCrawlerConfig = lazy(() => import('./modules/crawlerConfig/pages/EditCrawlerConfig'))
+const CrawlerCategory = lazy(() => import('./modules/crawlerCategory/CrawlerCategory'))
+const CreateCrawlerCategory = lazy(() => import('./modules/crawlerCategory/pages/CreateCrawlerCategory'))
+const EditCrawlerCategory = lazy(() => import('./modules/crawlerCategory/pages/EditCrawlerCategory'))
+const CrawlerProduct = lazy(() => import('./modules/product/CrawlerProduct'))
+const EditCrawlerProduct = lazy(() => import('./modules/product/pages/EditCrawlerProduct'))
+const ShopeeShopConfig = lazy(() => import('./modules/shopeeShopConfig/ShopeeShopConfig'))
+const PushProductApi = lazy(() => import('./modules/pushProductApi/PushProductApi'))
+
 
 // ----------------------------------------------------------------------
 

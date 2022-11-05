@@ -29,6 +29,8 @@ import MoreMenuCustom from '../../sections/shared/MoreMenuCustom';
 import { ROUTES } from '../../constants/routerConfig';
 import { generateRouteWithParam } from '../../utils/generate';
 import pushProductApiService from './services/pushProductApiService';
+import TableLoading from '../shared/components/TableLoading';
+import PushProductApiToolbar from './components/PushProductApiToolbar';
 
 // ----------------------------------------------------------------------
 
@@ -59,10 +61,9 @@ const PushProductApi = () => {
   }, [page, rowsPerPage]);
 
   const getListData = async () => {
-    await pushProductApiService.findAll()
-        .then(res => {
-            setListData(res.data.data);
-        })
+    await pushProductApiService.findAll().then((res) => {
+      setListData(res.data.data);
+    });
   };
 
   useEffect(() => {
@@ -77,7 +78,7 @@ const PushProductApi = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = listData?.content?.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -112,12 +113,9 @@ const PushProductApi = () => {
     setFilterName(event.target.value);
   };
 
-  const handleDeleteItem = async (item) => {
-  };
+  const handleDeleteItem = async (item) => {};
 
-  const handleCreateNewConfig = async () => {
-   
-  }
+  const handleCreateNewConfig = async () => {};
 
   return (
     <Page title="Crawl Config">
@@ -137,6 +135,7 @@ const PushProductApi = () => {
           </Button>
         </Stack>
         <Card>
+          <PushProductApiToolbar numSelected={listData?.content?.length} />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -144,16 +143,21 @@ const PushProductApi = () => {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={listData.length}
+                  rowCount={listData?.content?.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
+                  {!listData?.content && <TableLoading />}
+
                   {listData?.content?.map((config, index) => (
                     <TableRow hover key={index} tabIndex={-1} role="checkbox" selected={false} aria-checked={false}>
                       <TableCell padding="checkbox">
-                        <Checkbox checked={false} onChange={(event) => handleClick(event, 'Hello')} />
+                        <Checkbox
+                          checked={selected.indexOf(config?.id) !== -1}
+                          onChange={(event) => handleClick(event, config?.id)}
+                        />
                       </TableCell>
                       <TableCell align="left">{config.id}</TableCell>
                       <TableCell component="th" scope="row">

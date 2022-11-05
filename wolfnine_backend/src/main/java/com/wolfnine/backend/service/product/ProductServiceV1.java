@@ -22,6 +22,7 @@ import com.wolfnine.backend.util.FileUtil;
 import com.wolfnine.backend.util.JsonUtil;
 import com.wolfnine.backend.util.NumberUtil;
 import com.wolfnine.backend.util.ShopeeUtil;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -54,6 +55,9 @@ public class ProductServiceV1 implements ProductService {
     final Environment environment;
     final ShopeeShopConfigRepository shopeeShopConfigRepository;
     final PushProductApiConfigRepository pushProductApiConfigRepository;
+    private static final Dotenv env = Dotenv.configure().load();
+    private static String partnerKey = env.get("SHOPEE_PARTNER_KEY");
+    private static long partnerId = Long.parseLong(env.get("SHOPEE_PARTNER_ID"));
 
     @Override
     public List<ProductDto> findByUserId(long userId) {
@@ -136,8 +140,6 @@ public class ProductServiceV1 implements ProductService {
         ShopeeShopConfig shopeeShopConfig = shopeeShopConfigService.findById(pushProductToShopeeShop.getShopeeShopConfigId());
         if(shopeeShopConfig != null) {
             try {
-                long partnerId = Long.parseLong(environment.getProperty("shopee.partnerId"));
-                String partnerKey = environment.getProperty("shopee.partnerKey");
                 for (Long productId : pushProductToShopeeShop.getProductIds()
                      ) {
                     Optional<Product> optionalProduct = productRepository.findById(productId);
@@ -191,7 +193,7 @@ public class ProductServiceV1 implements ProductService {
                                 .build();
                         HttpEntity<ShopeeProduct> httpEntity = new HttpEntity<>(shopeeProduct, headers);
                         ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, httpEntity, String.class);
-                        System.out.println(response.toString());
+                        System.out.println("Push Product Response: " + response.toString());
                     }
                 }
                 return true;

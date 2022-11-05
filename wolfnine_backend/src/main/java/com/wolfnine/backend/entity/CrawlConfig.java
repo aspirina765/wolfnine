@@ -39,6 +39,7 @@ public class CrawlConfig extends BaseEntity {
     @JsonRawValue
     private String selectorDetails;
     private long userId;
+    private long templateId;
     @JsonBackReference
     @OneToMany(mappedBy = "crawlConfig", fetch = FetchType.LAZY)
     private List<CrawlCategory> crawlCategories;

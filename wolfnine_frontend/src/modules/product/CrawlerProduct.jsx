@@ -36,6 +36,7 @@ import crawlerProductService from './services/CrawlerProductService';
 import CustomListToolbar from '../../sections/shared/CustomListToolbar';
 import { generateRouteWithParam } from '../../utils/generate';
 import ProductListToolbar from './components/ProductListToolbar';
+import TableLoading from '../shared/components/TableLoading';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -187,7 +188,7 @@ const CrawlerProduct = () => {
           </Button>
         </Stack>
         <Card>
-          <ProductListToolbar numSelected={selected.length} onDelete={handleDeleteByIds} productIds={selected}/>
+          <ProductListToolbar numSelected={selected.length} onDelete={handleDeleteByIds} productIds={selected} />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -201,6 +202,8 @@ const CrawlerProduct = () => {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
+                  {!listData?.content && <TableLoading />}
+
                   {listData?.content?.map((config, index) => (
                     <TableRow hover key={index} tabIndex={-1} role="checkbox" selected={false} aria-checked={false}>
                       <TableCell padding="checkbox">

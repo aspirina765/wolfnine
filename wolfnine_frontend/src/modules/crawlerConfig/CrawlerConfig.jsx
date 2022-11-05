@@ -18,6 +18,8 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Box,
+  LinearProgress,
 } from '@mui/material';
 // components
 import Page from '../../components/Page';
@@ -33,6 +35,8 @@ import MoreMenuCustom from '../../sections/shared/MoreMenuCustom';
 import crawlerConfigService from './services/crawlerConfigService';
 import { fDateTime } from '../../utils/formatTime';
 import { ROUTES } from '../../constants/routerConfig';
+import TableLoading from '../shared/components/TableLoading';
+import CrawlerConfigToolbar from './components/CrawlerConfigToolbar';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -99,7 +103,9 @@ function CrawlerConfig() {
         sortBy: 'createdAt',
       })
       .then((res) => {
-        setCrawlerConfigList(res.data.data);
+        if (res?.data?.data) {
+          setCrawlerConfigList(res?.data?.data);
+        }
       });
   };
 
@@ -115,7 +121,7 @@ function CrawlerConfig() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = crawlerConfigList?.content?.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -173,6 +179,7 @@ function CrawlerConfig() {
           </Button>
         </Stack>
         <Card>
+          <CrawlerConfigToolbar numSelected={selected?.length} />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -180,16 +187,21 @@ function CrawlerConfig() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={crawlerConfigList.length}
-                  numSelected={selected.length}
+                  rowCount={crawlerConfigList?.content?.length}
+                  numSelected={selected?.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
+                  {!crawlerConfigList?.content && <TableLoading />}
+
                   {crawlerConfigList?.content?.map((config, index) => (
                     <TableRow hover key={index} tabIndex={-1} role="checkbox" selected={false} aria-checked={false}>
                       <TableCell padding="checkbox">
-                        <Checkbox checked={false} onChange={(event) => handleClick(event, 'Hello')} />
+                        <Checkbox
+                          checked={selected.indexOf(config.id) !== -1}
+                          onChange={(event) => handleClick(event, config?.id)}
+                        />
                       </TableCell>
                       <TableCell align="left">{config.id}</TableCell>
                       <TableCell component="th" scope="row" padding="none">
@@ -221,7 +233,7 @@ function CrawlerConfig() {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={crawlerConfigList.totalElements ?? 0}
+                count={crawlerConfigList?.totalElements ?? 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

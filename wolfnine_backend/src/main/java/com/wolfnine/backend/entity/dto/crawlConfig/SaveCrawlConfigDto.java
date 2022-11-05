@@ -26,6 +26,7 @@ public class SaveCrawlConfigDto {
     private List<Selector> selectorDetails;
     @NotEmpty
     private String selectorList;
+    private long templateId;
 
     public CrawlConfig toCrawlConfig() {
         Gson gson = new Gson();
@@ -35,6 +36,7 @@ public class SaveCrawlConfigDto {
                 .selectorDetails(gson.toJson(selectorDetails))
                 .status(CrawlConfigStatus.ACTIVE)
                 .selectors(gson.toJson(selectors))
+                .templateId(templateId)
                 .baseUrl(baseUrl)
                 .build();
     }

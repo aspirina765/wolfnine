@@ -5,7 +5,6 @@ import { ACCESS_TOKEN_KEY } from '../../auth/services/authService';
 
 export const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_API_URL,
-  timeout: 1000,
   headers: {
     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
   },
@@ -13,9 +12,6 @@ export const api = axios.create({
 
 const handleGlobalError = (error: AxiosError) => {
   const statusCode = error.response?.status;
-  // if (statusCode == 403) {
-  //   window.location.replace(ROUTES.LOGIN);
-  // }
 };
 
 api.interceptors.response.use(

@@ -32,6 +32,8 @@ import { fDateTime } from '../../utils/formatTime';
 import { ROUTES } from '../../constants/routerConfig';
 import { generateRouteWithParam } from '../../utils/generate';
 import shopeeShopConfigService from './services/shopeeShopConfigService';
+import TableLoading from '../shared/components/TableLoading';
+import ShopeeShopConfigToolbar from './components/ShopeeShopConfigToolbar';
 
 // ----------------------------------------------------------------------
 
@@ -63,13 +65,14 @@ const ShopeeShopConfig = () => {
   }, [page, rowsPerPage]);
 
   const getListData = async () => {
-    await shopeeShopConfigService.findAllByAuthUser({
+    await shopeeShopConfigService
+      .findAllByAuthUser({
         page,
         limit: rowsPerPage,
-    })
-        .then(res => {
-            setListData(res.data?.data)
-        })
+      })
+      .then((res) => {
+        setListData(res.data?.data);
+      });
   };
 
   useEffect(() => {
@@ -84,7 +87,7 @@ const ShopeeShopConfig = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = listData?.content?.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -119,15 +122,13 @@ const ShopeeShopConfig = () => {
     setFilterName(event.target.value);
   };
 
-  const handleDeleteItem = async (item) => {
-  };
+  const handleDeleteItem = async (item) => {};
 
   const handleCreateNewConfig = async () => {
-    await shopeeShopConfigService.generateShopAuthUrl()
-        .then(res => {
-            window.location.replace(res.data?.data, {replace: true});
-        })
-  }
+    await shopeeShopConfigService.generateShopAuthUrl().then((res) => {
+      window.location.replace(res.data?.data, { replace: true });
+    });
+  };
 
   return (
     <Page title="Crawl Config">
@@ -147,6 +148,7 @@ const ShopeeShopConfig = () => {
           </Button>
         </Stack>
         <Card>
+          <ShopeeShopConfigToolbar numSelected={selected?.length} />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -154,16 +156,21 @@ const ShopeeShopConfig = () => {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={listData.length}
+                  rowCount={listData?.content?.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
+                  {!listData?.content && <TableLoading />}
+
                   {listData?.content?.map((config, index) => (
                     <TableRow hover key={index} tabIndex={-1} role="checkbox" selected={false} aria-checked={false}>
                       <TableCell padding="checkbox">
-                        <Checkbox checked={false} onChange={(event) => handleClick(event, 'Hello')} />
+                        <Checkbox
+                          checked={selected.indexOf(config.id) !== -1}
+                          onChange={(event) => handleClick(event, config?.id)}
+                        />
                       </TableCell>
                       <TableCell align="left">{config.id}</TableCell>
                       <TableCell component="th" scope="row">

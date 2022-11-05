@@ -4,6 +4,7 @@ public enum SelectorType {
     GET_TEXT(1),
     GET_ATTRIBUTE(2),
     GET_HTML_CONTENT(3),
+    GET_ONLY_NUMBER(4),
     UNDEFINED(99);
     private int value;
 

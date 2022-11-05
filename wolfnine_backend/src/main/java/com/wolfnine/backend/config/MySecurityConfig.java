@@ -70,6 +70,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/api/v1/products/**",
                         "/api/v1/crawler/**",
+                        "/api/v1/crawlerConfigTemplates/**",
                         "/api/v1/shopeeShopConfigs/**",
                         "/api/v1/pushProductApis/**",
                         "/api/v1/users/my-info"

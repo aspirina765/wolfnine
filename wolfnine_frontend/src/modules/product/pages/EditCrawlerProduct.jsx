@@ -25,6 +25,7 @@ import Collapse from '@mui/material/Collapse';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import SkeletonLoadingV1 from '../../shared/components/SkeletonLoadingV1';
 
 const EditCrawlerProduct = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const EditCrawlerProduct = () => {
   const { id } = useParams();
   const [data, setData] = useState({});
   const [openAttributes, setOpenAttributes] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const RegisterSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -64,10 +66,7 @@ const EditCrawlerProduct = () => {
       setValue('link', data?.link);
       setValue('attributes', data?.attributes);
       setValue('crawlCategoryLink', data?.crawlCategory?.link);
-      console.log(
-        '🚀 ~ file: EditCrawlerProduct.jsx ~ line 53 ~ awaitcrawlerProductService.findById ~ res.data?.data',
-        res.data?.data
-      );
+      setIsLoading(false);
     });
   };
 
@@ -85,14 +84,12 @@ const EditCrawlerProduct = () => {
       .then((res) => {
         navigate(ROUTES.CRAWLER_CATEGORY, { replace: true });
       })
-      .catch((err) => {
-        console.log('🚀 ~ file: EditCrawlerProduct.jsx ~ line 74 ~ onSubmit ~ err', err);
-      });
+      .catch((err) => {});
   };
 
   const handleClickAttributes = () => {
     setOpenAttributes(!openAttributes);
-  }
+  };
 
   return (
     <Page title="Crawl Categories">
@@ -111,66 +108,70 @@ const EditCrawlerProduct = () => {
           </Button>
         </Stack>
         <Card sx={{ padding: '2rem' }}>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={3}>
-              <RHFTextField
-                name="link"
-                label="Link"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-               <RHFTextField
-                name="crawlCategoryLink"
-                label="Category Link"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}></Stack>
-              <List
-                sx={{ width: '100%', bgcolor: 'background.paper' }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-                subheader={
-                  <ListSubheader component="div" id="nested-list-subheader">
-                    Attributes
-                  </ListSubheader>
-                }
-              >
-                <ListItemButton onClick={handleClickAttributes}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={openAttributes ? 'Hidden' : 'Show'} />
-                  {openAttributes ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={openAttributes} timeout="auto" unmountOnExit>
-                  <Stack padding={5}>
-                    <Stack spacing={2}>
-                      {watch('attributes').map((item, index) => (
-                        <ProductAttributeItemForm
-                          key={index}
-                          config={item}
-                          index={index}
-                          onChangeConfigItem={() => {}}
-                          watch={watch}
-                          arrayName="attributes"
-                          onRemoveConfigItem={() => {}}
-                        />
-                      ))}
+          {isLoading ? (
+            <SkeletonLoadingV1 />
+          ) : (
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={3}>
+                <RHFTextField
+                  name="link"
+                  label="Link"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <RHFTextField
+                  name="crawlCategoryLink"
+                  label="Category Link"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}></Stack>
+                <List
+                  sx={{ width: '100%', bgcolor: 'background.paper' }}
+                  component="nav"
+                  aria-labelledby="nested-list-subheader"
+                  subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                      Attributes
+                    </ListSubheader>
+                  }
+                >
+                  <ListItemButton onClick={handleClickAttributes}>
+                    <ListItemIcon>
+                      <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={openAttributes ? 'Hidden' : 'Show'} />
+                    {openAttributes ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openAttributes} timeout="auto" unmountOnExit>
+                    <Stack padding={5}>
+                      <Stack spacing={2}>
+                        {watch('attributes').map((item, index) => (
+                          <ProductAttributeItemForm
+                            key={index}
+                            config={item}
+                            index={index}
+                            onChangeConfigItem={() => {}}
+                            watch={watch}
+                            arrayName="attributes"
+                            onRemoveConfigItem={() => {}}
+                          />
+                        ))}
+                      </Stack>
                     </Stack>
-                  </Stack>
-                  <Button onClick={() => handleAddNewSelectorConfig()} variant="contained" color="primary">
-                    Add New
-                  </Button>
-                </Collapse>
-              </List>
-              <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-                Submit
-              </LoadingButton>
-            </Stack>
-          </FormProvider>
+                    <Button onClick={() => handleAddNewSelectorConfig()} variant="contained" color="primary">
+                      Add New
+                    </Button>
+                  </Collapse>
+                </List>
+                <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+                  Submit
+                </LoadingButton>
+              </Stack>
+            </FormProvider>
+          )}
         </Card>
       </Container>
     </Page>

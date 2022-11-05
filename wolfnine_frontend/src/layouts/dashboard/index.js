@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { CircularProgress, LinearProgress } from '@mui/material';
+import SimpleBackdrop from '../../modules/shared/components/SimpleBackdrop';
+import SimpleProgress from '../../modules/shared/components/SimpleProgress';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +17,7 @@ const APP_BAR_DESKTOP = 92;
 const RootStyle = styled('div')({
   display: 'flex',
   minHeight: '100%',
-  overflow: 'hidden'
+  overflow: 'hidden',
 });
 
 const MainStyle = styled('div')(({ theme }) => ({
@@ -26,8 +29,8 @@ const MainStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     paddingTop: APP_BAR_DESKTOP + 24,
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
-  }
+    paddingRight: theme.spacing(2),
+  },
 }));
 
 // ----------------------------------------------------------------------
@@ -40,7 +43,9 @@ export default function DashboardLayout() {
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
       <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle>
-        <Outlet />
+        <Suspense fallback={<SimpleBackdrop />}>
+          <Outlet />
+        </Suspense>
       </MainStyle>
     </RootStyle>
   );

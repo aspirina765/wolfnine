@@ -1,5 +1,6 @@
 package com.wolfnine.backend.service.crawlConfig;
 
+import com.google.gson.Gson;
 import com.wolfnine.backend.entity.CrawlConfig;
 import com.wolfnine.backend.entity.dto.crawlConfig.SaveCrawlConfigDto;
 import com.wolfnine.backend.repository.CrawlConfigRepository;

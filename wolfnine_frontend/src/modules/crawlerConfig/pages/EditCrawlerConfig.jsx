@@ -31,6 +31,9 @@ import ConfigSelectorFormItem from '../components/ConfigSelectorFormItem';
 import { SelectorType } from '../types/crawlerConfigEnum';
 import { generateUUID } from '../../../utils/generate';
 import crawlerConfigService from '../services/crawlerConfigService';
+import SkeletonLoadingV1 from '../../shared/components/SkeletonLoadingV1';
+import CustomSelectBoxV2 from '../../../components/hook-form/CustomSelectBoxV2';
+import crawlerConfigTemplateService from '../../crawlerConfigTemplate/services/CrawlerConfigTemplateService';
 
 let selectorConfigInitial = {
   id: generateUUID(),
@@ -50,10 +53,13 @@ const EditCrawlerConfig = () => {
   const [openSelectorConfig, setOpenSelectorConfig] = React.useState(true);
   const [openSelectorDetailsConfig, setOpenSelectorDetailsConfig] = React.useState(true);
   const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [templates, setTemplates] = useState([]);
 
   const RegisterSchema = Yup.object().shape({
+    templateId: Yup.number(),
     name: Yup.string().required('Name required'),
     baseUrl: Yup.string().required('Base URL required'),
     selectorList: Yup.string().required('Selector list is required'),
@@ -98,6 +104,7 @@ const EditCrawlerConfig = () => {
   });
 
   const defaultValues = {
+    templateId: 0,
     name: '',
     baseUrl: '',
     selectorList: '',
@@ -122,6 +129,22 @@ const EditCrawlerConfig = () => {
     getDetailsData();
   }, []);
 
+  useEffect(() => {
+    getCrawlConfigTemplateList();
+  }, []);
+
+  useEffect(() => {
+    const configTemplate = templates.find((item) => item.id == getValues('templateId'));
+    // setValue('selectors', configTemplate?.selectors ?? []);
+    // setValue('selectorDetails', configTemplate?.selectorDetails ?? []);
+  }, [watch('templateId')]);
+
+  const getCrawlConfigTemplateList = async () => {
+    await crawlerConfigTemplateService.findAllAuthUser().then((res) => {
+      setTemplates(res.data?.data);
+    });
+  };
+
   const getDetailsData = async () => {
     await crawlerConfigService.findById(id).then((res) => {
       const data = res?.data?.data;
@@ -130,6 +153,8 @@ const EditCrawlerConfig = () => {
       setValue('selectorList', data?.selectorList ?? []);
       setValue('selectors', data?.selectors ?? []);
       setValue('selectorDetails', data?.selectorDetails ?? []);
+      setValue('templateId', data?.templateId);
+      setIsLoading(false);
     });
   };
 
@@ -195,94 +220,106 @@ const EditCrawlerConfig = () => {
           </Button>
         </Stack>
         <Card sx={{ padding: '2rem' }}>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={3}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <RHFTextField name="name" label="Name" />
-                <RHFTextField name="baseUrl" label="Base URL" />
+          {isLoading ? (
+            <SkeletonLoadingV1 />
+          ) : (
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={3}>
+                <CustomSelectBoxV2
+                  items={templates}
+                  itemKey="id"
+                  itemLabel="name"
+                  name="templateId"
+                  label="Template"
+                  firstOptionLabel="Select template"
+                />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <RHFTextField name="name" label="Name" />
+                  <RHFTextField name="baseUrl" label="Base URL" />
+                </Stack>
+                <RHFTextField name="selectorList" label="Selector List" />
+                <List
+                  sx={{ width: '100%', bgcolor: 'background.paper' }}
+                  component="nav"
+                  aria-labelledby="nested-list-subheader"
+                  subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                      Selector Config
+                    </ListSubheader>
+                  }
+                >
+                  <ListItemButton onClick={handleToggleSelectorConfigs}>
+                    <ListItemIcon>
+                      <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Show" />
+                    {openSelectorConfig ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openSelectorConfig} timeout="auto" unmountOnExit>
+                    <Stack padding={5}>
+                      <Stack spacing={2}>
+                        {watch('selectors').map((config, index) => (
+                          <ConfigSelectorFormItem
+                            key={index}
+                            config={config}
+                            index={index}
+                            onChangeConfigItem={handleChangeSelectorConfigItem}
+                            watch={watch}
+                            arrayName="selectors"
+                            onRemoveConfigItem={handleRemoveSelectorConfigItem}
+                          />
+                        ))}
+                      </Stack>
+                    </Stack>
+                    <Button onClick={() => handleAddNewSelectorConfig()} variant="contained" color="primary">
+                      Add New
+                    </Button>
+                  </Collapse>
+                </List>
+                <List
+                  sx={{ width: '100%', bgcolor: 'background.paper' }}
+                  component="nav"
+                  aria-labelledby="selectorDetailsConfig"
+                  subheader={
+                    <ListSubheader component="div" id="selectorDetailsConfig">
+                      Selector Details Config
+                    </ListSubheader>
+                  }
+                >
+                  <ListItemButton onClick={handleToggleSelectorDetailsConfigs}>
+                    <ListItemIcon>
+                      <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Show" />
+                    {openSelectorDetailsConfig ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openSelectorDetailsConfig} timeout="auto" unmountOnExit>
+                    <Stack padding={5}>
+                      <Stack spacing={2}>
+                        {watch('selectorDetails').map((config, index) => (
+                          <ConfigSelectorFormItem
+                            key={index}
+                            config={config}
+                            index={index}
+                            onChangeConfigItem={handleChangeSelectorConfigItem}
+                            watch={watch}
+                            arrayName="selectorDetails"
+                            onRemoveConfigItem={handleRemoveSelectorDetailsConfigItem}
+                          />
+                        ))}
+                      </Stack>
+                    </Stack>
+                    <Button onClick={() => handleAddNewSelectorDetailsConfig()} variant="contained" color="primary">
+                      Add New
+                    </Button>
+                  </Collapse>
+                </List>
+                <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+                  Submit
+                </LoadingButton>
               </Stack>
-              <RHFTextField name="selectorList" label="Selector List" />
-              <List
-                sx={{ width: '100%', bgcolor: 'background.paper' }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-                subheader={
-                  <ListSubheader component="div" id="nested-list-subheader">
-                    Selector Config
-                  </ListSubheader>
-                }
-              >
-                <ListItemButton onClick={handleToggleSelectorConfigs}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Show" />
-                  {openSelectorConfig ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={openSelectorConfig} timeout="auto" unmountOnExit>
-                  <Stack padding={5}>
-                    <Stack spacing={2}>
-                      {watch('selectors').map((config, index) => (
-                        <ConfigSelectorFormItem
-                          key={index}
-                          config={config}
-                          index={index}
-                          onChangeConfigItem={handleChangeSelectorConfigItem}
-                          watch={watch}
-                          arrayName="selectors"
-                          onRemoveConfigItem={handleRemoveSelectorConfigItem}
-                        />
-                      ))}
-                    </Stack>
-                  </Stack>
-                  <Button onClick={() => handleAddNewSelectorConfig()} variant="contained" color="primary">
-                    Add New
-                  </Button>
-                </Collapse>
-              </List>
-              <List
-                sx={{ width: '100%', bgcolor: 'background.paper' }}
-                component="nav"
-                aria-labelledby="selectorDetailsConfig"
-                subheader={
-                  <ListSubheader component="div" id="selectorDetailsConfig">
-                    Selector Details Config
-                  </ListSubheader>
-                }
-              >
-                <ListItemButton onClick={handleToggleSelectorDetailsConfigs}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Show" />
-                  {openSelectorDetailsConfig ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={openSelectorDetailsConfig} timeout="auto" unmountOnExit>
-                  <Stack padding={5}>
-                    <Stack spacing={2}>
-                      {watch('selectorDetails').map((config, index) => (
-                        <ConfigSelectorFormItem
-                          key={index}
-                          config={config}
-                          index={index}
-                          onChangeConfigItem={handleChangeSelectorConfigItem}
-                          watch={watch}
-                          arrayName="selectorDetails"
-                          onRemoveConfigItem={handleRemoveSelectorDetailsConfigItem}
-                        />
-                      ))}
-                    </Stack>
-                  </Stack>
-                  <Button onClick={() => handleAddNewSelectorDetailsConfig()} variant="contained" color="primary">
-                    Add New
-                  </Button>
-                </Collapse>
-              </List>
-              <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-                Submit
-              </LoadingButton>
-            </Stack>
-          </FormProvider>
+            </FormProvider>
+          )}
         </Card>
       </Container>
     </Page>

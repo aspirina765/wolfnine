@@ -5,6 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wolfnine.backend.entity.shopee.*;
 import com.wolfnine.backend.entity.shopee.brand.ShopeeBrandResponse;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.awt.*;
@@ -29,9 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ShopeeUtil {
+    private static final Dotenv env = Dotenv.configure().load();
     private static final String host = "https://partner.shopeemobile.com";
-    private static final String tmp_partner_key = "0b27ea12b0a4a37084e4f5b81bdfdd02a0d03301f47af6027511fa8bc253a05f";
-    private static final long partner_id = 842499;
+    private static  String tmp_partner_key = env.get("SHOPEE_PARTNER_KEY");
+    private static  long partner_id = Long.parseLong(env.get("SHOPEE_PARTNER_ID"));
 
     //generate auth url
     public static String shopAuth(String redirectUrl) {

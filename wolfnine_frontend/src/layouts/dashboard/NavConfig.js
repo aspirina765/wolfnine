@@ -20,22 +20,22 @@ const navConfig = [
   {
     title: 'Crawler Categories',
     path: ROUTES.CRAWLER_CATEGORY,
-    icon: getIcon('carbon:cloud-satellite-config'),
+    icon: getIcon('bxs:category'),
   },
   {
     title: 'Crawler Products',
     path: ROUTES.CRAWLER_PRODUCT,
-    icon: getIcon('carbon:cloud-satellite-config'),
+    icon: getIcon('bxl:product-hunt'),
   },
   {
     title: 'Shopee Shop Configs',
     path: ROUTES.SHOPEE_SHOP_CONFIG,
-    icon: getIcon('carbon:cloud-satellite-config'),
+    icon: getIcon('healthicons:market-stall'),
   },
   {
     title: 'Push Product Api',
     path: ROUTES.PUSH_PRODUCT_API,
-    icon: getIcon('carbon:cloud-satellite-config'),
+    icon: getIcon('eos-icons:api'),
   },
 ];
 

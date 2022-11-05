@@ -42,22 +42,9 @@ export default function LoginForm() {
     checkLogged();
   }, []);
 
-  const checkLogged = async () => {
-    let isLogged = false;
-
-    await authService
-      .getAuthUserInfo()
-      .then((res) => {
-        if (res?.data) {
-          console.log('🚀 ~ file: LoginForm.js ~ line 50 ~ .then ~ res', res);
-          isLogged = true;
-        }
-      })
-      .catch((err) => {});
-
-    if (isLogged) {
-      console.log('🚀 ~ file: LoginForm.js ~ line 54 ~ checkLogged ~ isLogged', isLogged);
-      navigate(ROUTES.DASHBOARD_APP_PATH, { replace: true });
+  const checkLogged = () => {
+    if (authService.getAccessToken()) {
+      // navigate(ROUTES.DASHBOARD_APP_PATH);
     }
   };
 

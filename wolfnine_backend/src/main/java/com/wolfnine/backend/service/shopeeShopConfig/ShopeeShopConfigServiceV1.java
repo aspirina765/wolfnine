@@ -8,6 +8,7 @@ import com.wolfnine.backend.entity.shopee.brand.ShopeeBrandResponse;
 import com.wolfnine.backend.repository.ShopeeShopConfigRepository;
 import com.wolfnine.backend.service.user.UserService;
 import com.wolfnine.backend.util.ShopeeUtil;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,9 @@ import java.util.stream.Collectors;
 public class ShopeeShopConfigServiceV1 implements ShopeeShopConfigService{
     private final ShopeeShopConfigRepository shopeeShopConfigRepository;
     private final UserService userService;
-    private final Environment environment;
+    private static final Dotenv env = Dotenv.configure().load();
+    private static String partnerKey = env.get("SHOPEE_PARTNER_KEY");
+    private static long partnerId = Long.parseLong(env.get("SHOPEE_PARTNER_ID"));
 
     @Override
     public List<ShopeeShopConfig> findAll() {
@@ -51,8 +54,6 @@ public class ShopeeShopConfigServiceV1 implements ShopeeShopConfigService{
     @Override
     public ShopeeShopConfig save(SaveShopeeShopConfig saveShopeeShopConfig) throws ParseException, IOException {
         saveShopeeShopConfig.setUserId(userService.findByAuthUser().getId());
-        long partnerId = Long.parseLong(environment.getProperty("shopee.partnerId"));
-        String partnerKey = environment.getProperty("shopee.partnerKey");
         ShopeeCredential shopeeCredential = ShopeeUtil.getTokenShopLevel(saveShopeeShopConfig.getCode(), partnerId, partnerKey, saveShopeeShopConfig.getShopId());
         ShopeeShopInfo shopeeShopInfo = ShopeeUtil.getShopInfo(
           shopeeCredential.getAccess_token(),
@@ -90,8 +91,6 @@ public class ShopeeShopConfigServiceV1 implements ShopeeShopConfigService{
         ShopeeShopConfig shopeeShopConfig = findById(shopeeShopConfigId);
         if(shopeeShopConfig != null) {
             refreshAccessTokenShopeeShop(shopeeShopConfig);
-            long partnerId = Long.parseLong(environment.getProperty("shopee.partnerId"));
-            String partnerKey = environment.getProperty("shopee.partnerKey");
             ShopeeCategoryResponse shopeeCategoryResponse = ShopeeUtil.getProductCategoryList(
                     shopeeShopConfig.getAccessToken(),
                     partnerId,
@@ -114,8 +113,6 @@ public class ShopeeShopConfigServiceV1 implements ShopeeShopConfigService{
         ShopeeShopConfig shopeeShopConfig = findById(shopeeShopConfigId);
         if(shopeeShopConfig != null) {
             shopeeShopConfig = refreshAccessTokenShopeeShop(shopeeShopConfig);
-            long partnerId = Long.parseLong(environment.getProperty("shopee.partnerId"));
-            String partnerKey = environment.getProperty("shopee.partnerKey");
             ShopeeLogisticChannelResponse logisticChannelResponse = ShopeeUtil.getLogisticChannelList(
                     shopeeShopConfig.getAccessToken(),
                     partnerId,
@@ -133,8 +130,6 @@ public class ShopeeShopConfigServiceV1 implements ShopeeShopConfigService{
         if(shopeeShopConfig != null) {
             try {
                 shopeeShopConfig = refreshAccessTokenShopeeShop(shopeeShopConfig);
-                long partnerId = Long.parseLong(environment.getProperty("shopee.partnerId"));
-                String partnerKey = environment.getProperty("shopee.partnerKey");
                 ShopeeBrandResponse logisticChannelResponse = ShopeeUtil.getBrandList(
                         shopeeShopConfig.getAccessToken(),
                         partnerId,
@@ -156,8 +151,6 @@ public class ShopeeShopConfigServiceV1 implements ShopeeShopConfigService{
     @Override
     public ShopeeShopConfig refreshAccessTokenShopeeShop(ShopeeShopConfig shopeeShopConfig) {
         try {
-            long partnerId = Long.parseLong(environment.getProperty("shopee.partnerId"));
-            String partnerKey = environment.getProperty("shopee.partnerKey");
             LocalDateTime now = LocalDateTime.now();
             System.out.println("Check expired access token: " + now.isAfter(shopeeShopConfig.getExpiredAt()));
             if(now.isAfter(shopeeShopConfig.getExpiredAt())) {
