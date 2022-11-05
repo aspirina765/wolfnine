@@ -15,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -25,6 +26,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +36,25 @@ import java.util.List;
 @EnableScheduling
 public class CrawlBot {
     private static ChromeOptions options;
+    private static ChromeDriverService service;
     @Autowired
     private CrawlCategoryService crawlCategoryService;
     @Autowired
     private ProductService productService;
 
     public CrawlBot() {
-        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         WebDriverManager.chromedriver().setup();
+        service = new ChromeDriverService.Builder()
+                .usingDriverExecutable(new File("/usr/local/bin/chromedriver"))
+                .usingAnyFreePort()
+                .build();
         options = new ChromeOptions().setHeadless(true);
     }
 
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
-        WebDriver driver = new ChromeDriver(options);
+        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
         List<Product> products = new ArrayList<>();
@@ -121,7 +127,7 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlDetails() throws InterruptedException{
-        WebDriver driver = new ChromeDriver(options);
+        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         System.out.println("Begin crawl details ...");
         List<Product> products = productService.findAllByStatus(ProductStatus.PENDING);
         for(Product product : products) {
