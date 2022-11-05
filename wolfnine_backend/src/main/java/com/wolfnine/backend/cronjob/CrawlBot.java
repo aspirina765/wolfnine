@@ -44,9 +44,8 @@ public class CrawlBot {
     private ProductService productService;
 
     public CrawlBot() throws IOException {
-        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
-        WebDriverManager.chromedriver()
-                .setup();
+//        WebDriverManager.chromedriver()
+//                .setup();
 //        service = new ChromeDriverService.Builder()
 //                .usingDriverExecutable(new File("/usr/bin/chromedriver"))
 //                .usingAnyFreePort()
@@ -59,6 +58,8 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
         System.out.println("Bot running ...");
@@ -133,6 +134,8 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlDetails() throws InterruptedException{
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
         System.out.println("Begin crawl details ...");
