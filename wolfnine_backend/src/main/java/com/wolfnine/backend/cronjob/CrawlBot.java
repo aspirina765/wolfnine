@@ -50,7 +50,7 @@ public class CrawlBot {
 //                .usingDriverExecutable(new File("/usr/local/bin/chromedriver.exe"))
 //                .usingAnyFreePort()
 //                .build();
-        service.start();
+//        service.start();
         options = new ChromeOptions().setHeadless(true);
     }
 
