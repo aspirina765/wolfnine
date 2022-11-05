@@ -40,7 +40,7 @@ public class CrawlBot {
     private ProductService productService;
 
     public CrawlBot() {
-        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver /usr/local/bin/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         WebDriverManager.chromedriver().setup();
         options = new ChromeOptions().setHeadless(true);
     }
