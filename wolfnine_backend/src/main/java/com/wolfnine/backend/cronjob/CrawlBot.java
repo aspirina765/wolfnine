@@ -27,6 +27,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,13 @@ public class CrawlBot {
     @Autowired
     private ProductService productService;
 
-    public CrawlBot() {
-        WebDriverManager.chromedriver().setup();
+    public CrawlBot() throws IOException {
+//        WebDriverManager.chromedriver().setup();
         service = new ChromeDriverService.Builder()
                 .usingDriverExecutable(new File("/usr/local/bin/chromedriver"))
                 .usingAnyFreePort()
                 .build();
+        service.start();
         options = new ChromeOptions().setHeadless(true);
     }
 
