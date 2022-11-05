@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EnableAsync
-//@Component
-//@EnableScheduling
+@Component
+@EnableScheduling
 public class CrawlBot {
     private static ChromeOptions options;
     @Autowired
