@@ -44,8 +44,8 @@ public class CrawlBot {
     private ProductService productService;
 
     public CrawlBot() throws IOException {
-//        WebDriverManager.chromedriver()
-//                .setup();
+        WebDriverManager.chromedriver()
+                .setup();
         service = new ChromeDriverService.Builder()
                 .usingDriverExecutable(new File("/usr/bin/chromedriver"))
                 .usingAnyFreePort()
