@@ -132,6 +132,7 @@ public class CrawlBot {
                 }
                 category.setStatus(CrawlCategoryStatus.CRAWLED);
             }catch (Exception e) {
+                System.out.println("Errors: " + e.getMessage());
                 e.printStackTrace();
                 category.setStatus(CrawlCategoryStatus.FAILED);
             }
