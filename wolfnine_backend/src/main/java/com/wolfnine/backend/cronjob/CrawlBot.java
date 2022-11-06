@@ -74,8 +74,8 @@ public class CrawlBot {
             System.out.println("Start crawling ...");
             driver.get(category.getLink());
             System.out.println("After driver to link ......................... >>>>>>>");
-//            List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
-            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
+            List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+//            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
             System.out.println("After driver get list element ......................... >>>>>>>");
             System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements.size());
             for (WebElement element: elements) {
