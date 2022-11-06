@@ -45,16 +45,14 @@ public class CrawlBot {
 
     public CrawlBot() throws IOException {
 //        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
-//        WebDriverManager.chromedriver()
-//                .setup();
+        WebDriverManager.chromedriver()
+                .setup();
         service = new ChromeDriverService.Builder()
                 .usingDriverExecutable(new File("/usr/bin/chromedriver"))
                 .usingAnyFreePort()
                 .withTimeout(Duration.ofMinutes(10))
-                .withSilent(true)
                 .build();
         service.start();
-
         options = new ChromeOptions();
         options.setHeadless(false);
         options.setExperimentalOption("w3c", false);
