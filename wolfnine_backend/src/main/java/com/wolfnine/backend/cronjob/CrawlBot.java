@@ -74,6 +74,7 @@ public class CrawlBot {
             try {
                 System.out.println("Start crawling ...");
                 driver.get(category.getLink());
+                driver.wait();
                 System.out.println("After driver to link ......................... >>>>>>>");
                 List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
 //            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
