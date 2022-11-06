@@ -124,7 +124,8 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
+            <artifactId>selenium-devtools-v96</artifactId>
+            <version>4.1.1</version>
         </dependency>
     </dependencies>
     <build>
