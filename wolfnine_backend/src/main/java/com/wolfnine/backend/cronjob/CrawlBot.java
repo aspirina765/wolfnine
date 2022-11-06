@@ -134,6 +134,7 @@ public class CrawlBot {
                 }
                 category.setStatus(CrawlCategoryStatus.CRAWLED);
             }catch (Exception e) {
+                e.printStackTrace();
                 category.setStatus(CrawlCategoryStatus.FAILED);
             }
             crawlCategoryService.update(category.getId(), category);
