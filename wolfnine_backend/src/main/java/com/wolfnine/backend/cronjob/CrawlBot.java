@@ -49,7 +49,6 @@ public class CrawlBot {
 //                .setup();
         service = new ChromeDriverService.Builder()
                 .usingDriverExecutable(new File("/usr/bin/chromedriver"))
-                .usingAnyFreePort()
                 .withTimeout(Duration.ofMinutes(10))
                 .withSilent(true)
                 .build();
@@ -57,7 +56,6 @@ public class CrawlBot {
 
         options = new ChromeOptions()
                 .setExperimentalOption("w3c", false)
-                .setExperimentalOption("OSS", false)
                 .setHeadless(true);
     }
 
