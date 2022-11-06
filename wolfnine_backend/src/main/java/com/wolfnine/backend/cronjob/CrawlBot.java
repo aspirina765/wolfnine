@@ -19,6 +19,8 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -63,6 +65,7 @@ public class CrawlBot {
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
         WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
 //        WebDriver driver = new ChromeDriver(options);
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
@@ -71,7 +74,8 @@ public class CrawlBot {
             System.out.println("Start crawling ...");
             driver.get(category.getLink());
             System.out.println("After driver to link ......................... >>>>>>>");
-            List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+//            List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorLink())));
             System.out.println("After driver get list element ......................... >>>>>>>");
             System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements.size());
             for (WebElement element: elements) {
