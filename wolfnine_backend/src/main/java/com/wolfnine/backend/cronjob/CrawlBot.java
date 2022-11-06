@@ -71,67 +71,70 @@ public class CrawlBot {
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
         List<Product> products = new ArrayList<>();
         for (CrawlCategory category : crawlCategories) {
-            System.out.println("Start crawling ...");
-            driver.get(category.getLink());
-            System.out.println("After driver to link ......................... >>>>>>>");
-            List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+            try {
+                System.out.println("Start crawling ...");
+                driver.get(category.getLink());
+                System.out.println("After driver to link ......................... >>>>>>>");
+                List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
 //            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
-            System.out.println("After driver get list element ......................... >>>>>>>");
-            System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements.size());
-            for (WebElement element: elements) {
-                //Bóc tách dữ liệu của từng item và lưu vào trong database
-                try {
-                    JsonParser jsonParser = new JsonParser();
-                    JsonArray attributeArray = jsonParser.parse(category.getCrawlConfig().getSelectors()).getAsJsonArray();
-                    JsonArray productAttributes = new JsonArray();
-                    String productLink = "";
-                    for(JsonElement attributeJson : attributeArray) {
-                        JsonObject attribute = attributeJson.getAsJsonObject();
-                        WebElement elm = element.findElement(By.cssSelector(attribute.get(CrawlConstant.CONFIG_SELECTOR_VALUE).getAsString()));
-                        SelectorType selectorType = SelectorType.of(attribute.get(CrawlConstant.CONFIG_SELECTOR_TYPE).getAsInt());
-                        String elmValue = "";
-                        switch (selectorType) {
-                            case GET_TEXT:
-                                elmValue = elm.getText();
-                                break;
-                            case GET_ATTRIBUTE:
-                                elmValue = elm.getAttribute(attribute.get(CrawlConstant.CONFIG_SELECTOR_ATTRIBUTE).getAsString());
-                                break;
-                            case GET_HTML_CONTENT:
-                                elmValue = elm.getAttribute("innerHTML");
-                                break;
-                            case GET_ONLY_NUMBER:
-                                elmValue = String.valueOf(NumberUtil.removeSymbolCurrency(elm.getText()));
-                                break;
-                            default:
-                                break;
+                System.out.println("After driver get list element ......................... >>>>>>>");
+                System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements.size());
+                for (WebElement element: elements) {
+                    //Bóc tách dữ liệu của từng item và lưu vào trong database
+                    try {
+                        JsonParser jsonParser = new JsonParser();
+                        JsonArray attributeArray = jsonParser.parse(category.getCrawlConfig().getSelectors()).getAsJsonArray();
+                        JsonArray productAttributes = new JsonArray();
+                        String productLink = "";
+                        for(JsonElement attributeJson : attributeArray) {
+                            JsonObject attribute = attributeJson.getAsJsonObject();
+                            WebElement elm = element.findElement(By.cssSelector(attribute.get(CrawlConstant.CONFIG_SELECTOR_VALUE).getAsString()));
+                            SelectorType selectorType = SelectorType.of(attribute.get(CrawlConstant.CONFIG_SELECTOR_TYPE).getAsInt());
+                            String elmValue = "";
+                            switch (selectorType) {
+                                case GET_TEXT:
+                                    elmValue = elm.getText();
+                                    break;
+                                case GET_ATTRIBUTE:
+                                    elmValue = elm.getAttribute(attribute.get(CrawlConstant.CONFIG_SELECTOR_ATTRIBUTE).getAsString());
+                                    break;
+                                case GET_HTML_CONTENT:
+                                    elmValue = elm.getAttribute("innerHTML");
+                                    break;
+                                case GET_ONLY_NUMBER:
+                                    elmValue = String.valueOf(NumberUtil.removeSymbolCurrency(elm.getText()));
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if(attribute.get(CrawlConstant.CONFIG_KEY_IS_LINK).getAsInt() == CrawlConstant.CONFIG_KEY_IS_LINK_ACTIVE) {
+                                productLink = elmValue;
+                            }
+                            JsonObject elmValueObject = new JsonObject();
+                            CrawlDataType elmValueType = CrawlDataType.of(attribute.get(CrawlConstant.CONFIG_KEY_DATA_TYPE).getAsInt());
+                            elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_TYPE, elmValueType.getValue());
+                            elmValueObject.addProperty(CrawlConstant.CONFIG_KEY_ITEM_VALUE, elmValue);
+                            elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_KEY, attribute.get(CrawlConstant.CONFIG_SELECTOR_KEY).getAsString());
+                            productAttributes.add(elmValueObject);
                         }
-                        if(attribute.get(CrawlConstant.CONFIG_KEY_IS_LINK).getAsInt() == CrawlConstant.CONFIG_KEY_IS_LINK_ACTIVE) {
-                            productLink = elmValue;
-                        }
-                        JsonObject elmValueObject = new JsonObject();
-                        CrawlDataType elmValueType = CrawlDataType.of(attribute.get(CrawlConstant.CONFIG_KEY_DATA_TYPE).getAsInt());
-                        elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_TYPE, elmValueType.getValue());
-                        elmValueObject.addProperty(CrawlConstant.CONFIG_KEY_ITEM_VALUE, elmValue);
-                        elmValueObject.addProperty(CrawlConstant.CONFIG_SELECTOR_KEY, attribute.get(CrawlConstant.CONFIG_SELECTOR_KEY).getAsString());
-                        productAttributes.add(elmValueObject);
+                        Product product = Product.builder()
+                                .crawlCategoryId(category.getId())
+                                .categoryId(category.getCategoryId())
+                                .link(productLink)
+                                .attributes(productAttributes.toString())
+                                .userId(category.getUserId())
+                                .status(ProductStatus.PENDING)
+                                .build();
+                        products.add(product);
+                    }catch (Exception e) {
+                        System.out.println("Error >>>>>>>>>>>>>>" + e.getMessage());
+                        e.printStackTrace();
+                        continue;
                     }
-                    Product product = Product.builder()
-                            .crawlCategoryId(category.getId())
-                            .categoryId(category.getCategoryId())
-                            .link(productLink)
-                            .attributes(productAttributes.toString())
-                            .userId(category.getUserId())
-                            .status(ProductStatus.PENDING)
-                            .build();
-                    products.add(product);
-                    category.setStatus(CrawlCategoryStatus.CRAWLED);
-                }catch (Exception e) {
-                    category.setStatus(CrawlCategoryStatus.FAILED);
-                    System.out.println("Error >>>>>>>>>>>>>>" + e.getMessage());
-                    e.printStackTrace();
-                    continue;
                 }
+                category.setStatus(CrawlCategoryStatus.CRAWLED);
+            }catch (Exception e) {
+                category.setStatus(CrawlCategoryStatus.FAILED);
             }
             crawlCategoryService.update(category.getId(), category);
         }
