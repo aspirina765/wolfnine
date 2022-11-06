@@ -55,6 +55,7 @@ public class CrawlBot {
         service.start();
         options = new ChromeOptions();
         options.setHeadless(true);
+        options.setCapability("browserVersion", "106");
         options.setExperimentalOption("w3c", false);
     }
 
