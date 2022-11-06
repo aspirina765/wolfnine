@@ -56,7 +56,7 @@ public class CrawlBot {
         service.start();
 
         options = new ChromeOptions();
-        options.setHeadless(true);
+        options.setHeadless(false);
         options.setExperimentalOption("w3c", false);
     }
 
