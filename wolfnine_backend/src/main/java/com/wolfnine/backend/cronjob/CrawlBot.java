@@ -47,9 +47,7 @@ public class CrawlBot {
     @Autowired
     private ProductService productService;
     private static String[] proxies = new String[] {
-        "133.242.171.216:3128",
-        "122.49.208.242:3128",
-        "194.8.218.100:8080",
+        "117.251.103.186:8080"
     };
 
     public CrawlBot() throws IOException {
@@ -76,9 +74,10 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
-//        List<String> proxies = getProxies();
-        System.out.println("Proxy log: " + proxies[NumberUtil.getRandomNumber(0, proxies.length - 1)]);
-        options.addArguments("--proxy-server=" + proxies[NumberUtil.getRandomNumber(0, proxies.length - 1)]);
+        List<String> proxies = getProxies();
+        String proxy = proxies.get(NumberUtil.getRandomNumber(0, proxies.size() - 1));
+        System.out.println("Proxy log: " + proxy);
+        options.addArguments("--proxy-server=" + proxy);
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
@@ -261,10 +260,12 @@ public class CrawlBot {
         chromeOptions.setHeadless(true);
         WebDriver driver = new ChromeDriver(chromeOptions);
         driver.get("https://sslproxies.org/");
-        List<WebElement> elements = driver.findElements(By.cssSelector("#list > div > div.table-responsive > div > table > tbody > tr > td:nth-child(1)"));
+        List<WebElement> elements = driver.findElements(By.cssSelector("#list > div > div.table-responsive > div > table > tbody > tr"));
         for (WebElement element : elements) {
-            proxies.add(element.getText());
-            System.out.println(element.getText());
+            String ip = element.findElement(By.cssSelector("td:nth-child(1)")).getText();
+            String port = element.findElement(By.cssSelector("td:nth-child(2)")).getText();
+            proxies.add(ip + ":" + port);
+            System.out.println(ip + ":" + port);
         }
         return proxies;
     }
