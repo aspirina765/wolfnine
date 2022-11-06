@@ -44,26 +44,24 @@ public class CrawlBot {
     private ProductService productService;
 
     public CrawlBot() throws IOException {
-        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+//        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
         WebDriverManager.chromedriver()
                 .setup();
-//        service = new ChromeDriverService.Builder()
-//                .usingDriverExecutable(new File("/usr/bin/chromedriver"))
-//                .withTimeout(Duration.ofMinutes(10))
-//                .withSilent(true)
-//                .build();
-//        service.start();
+        service = new ChromeDriverService.Builder()
+                .usingDriverExecutable(new File("/usr/bin/chromedriver"))
+                .withTimeout(Duration.ofMinutes(10))
+                .withSilent(true)
+                .build();
+        service.start();
 
         options = new ChromeOptions();
         options.setHeadless(true);
-        options.setCapability("browserVersion", "106");
-        options.setCapability("platformName", "Linux");
     }
 
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
-        WebDriver driver = new RemoteWebDriver(options);
+        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
 //        WebDriver driver = new ChromeDriver(options);
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
@@ -137,7 +135,7 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlDetails() throws InterruptedException{
-        WebDriver driver = new RemoteWebDriver(options);
+        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
 //        WebDriver driver = new ChromeDriver(options);
         System.out.println("Begin crawl details ...");
         List<Product> products = productService.findAllByStatus(ProductStatus.PENDING);
