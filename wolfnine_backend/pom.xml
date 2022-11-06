@@ -124,8 +124,8 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-devtools-v96</artifactId>
-            <version>4.1.1</version>
+            <artifactId>selenium-devtools-v86</artifactId>
+            <version>4.0.0-beta-2</version>
         </dependency>
     </dependencies>
     <build>
