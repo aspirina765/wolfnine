@@ -78,7 +78,7 @@ public class CrawlBot {
 //                List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
             List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
                 System.out.println("After driver get list element ......................... >>>>>>>");
-                System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements.size());
+                System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements);
                 for (WebElement element: elements) {
                     //Bóc tách dữ liệu của từng item và lưu vào trong database
                     try {
