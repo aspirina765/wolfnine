@@ -69,7 +69,7 @@ public class CrawlBot {
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
         List<String> proxies = getProxies();
-        options.setCapability("proxy", proxies.get(NumberUtil.getRandomNumber(0, proxies.size() - 1)));
+        options.addArguments("--proxy-server=" + proxies.get(NumberUtil.getRandomNumber(0, proxies.size() - 1)));
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
