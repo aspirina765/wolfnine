@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -28,5 +30,11 @@ class CrawlBotTest {
     @Test
     void crawlDetails() throws InterruptedException {
         crawlBot.crawlDetails();
+    }
+
+    @Test
+    void getProxies() {
+        List<String> proxies = crawlBot.getProxies();
+        assertNotEquals(0, proxies.size());
     }
 }

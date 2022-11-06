@@ -7,4 +7,8 @@ public class NumberUtil {
         String numberFormat = moneyString.replaceAll("[^0-9]", "").replace(",", "");
         return Double.parseDouble(numberFormat);
     }
+
+    public static int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
 }

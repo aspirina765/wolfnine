@@ -68,6 +68,8 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
+        List<String> proxies = getProxies();
+        options.setCapability("proxy", proxies.get(NumberUtil.getRandomNumber(0, proxies.size() - 1)));
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
@@ -239,5 +241,22 @@ public class CrawlBot {
         System.out.println("End crawl details ...");
         Thread.sleep(2000);
         driver.quit();
+    }
+
+    public List<String> getProxies() {
+        List<String> proxies = new ArrayList<>();
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("start-maximized");
+        chromeOptions.setExperimentalOption("excludeSwitches", new String[] {"enable-automation"});
+        chromeOptions.setExperimentalOption("useAutomationExtension", false);
+        chromeOptions.setHeadless(true);
+        WebDriver driver = new ChromeDriver(chromeOptions);
+        driver.get("https://sslproxies.org/");
+        List<WebElement> elements = driver.findElements(By.cssSelector("#list > div > div.table-responsive > div > table > tbody > tr > td:nth-child(1)"));
+        for (WebElement element : elements) {
+            proxies.add(element.getText());
+            System.out.println(element.getText());
+        }
+        return proxies;
     }
 }
