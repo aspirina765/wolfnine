@@ -18,6 +18,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -48,8 +49,8 @@ public class CrawlBot {
 
     public CrawlBot() throws IOException {
         System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
-//        WebDriverManager.chromedriver()
-//                .setup();
+        WebDriverManager.chromedriver()
+                .setup();
 //        service = new ChromeDriverService.Builder()
 //                .usingDriverExecutable(new File("/usr/bin/chromedriver"))
 //                .usingAnyFreePort()
