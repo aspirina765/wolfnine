@@ -65,7 +65,7 @@ public class CrawlBot {
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
         WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
 //        WebDriver driver = new ChromeDriver(options);
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
