@@ -70,7 +70,6 @@ public class CrawlBot {
     public void crawlList() throws InterruptedException {
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
-        driver.wait(100000);
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
@@ -81,6 +80,10 @@ public class CrawlBot {
                 driver.get(category.getLink());
                 System.out.println("After driver to link ......................... >>>>>>>");
                 List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+                System.out.println("DOM >>>>>>>>>>>> " );
+                System.out.println(driver.getCurrentUrl());
+                System.out.println(driver.getTitle());
+                System.out.println(driver.getPageSource());
 //            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
                 System.out.println("After driver get list element ......................... >>>>>>>");
                 System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements);
