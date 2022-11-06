@@ -68,6 +68,9 @@ public class CrawlBot {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--headless");
         options.setExperimentalOption("w3c", true);
+        options.addArguments("start-maximized");
+        options.setExperimentalOption("excludeSwitches", new String[] {"enable-automation"});
+        options.setExperimentalOption("useAutomationExtension", false);
     }
 
     @Async
