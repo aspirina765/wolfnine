@@ -46,6 +46,11 @@ public class CrawlBot {
     private CrawlCategoryService crawlCategoryService;
     @Autowired
     private ProductService productService;
+    private static String[] proxies = new String[] {
+        "133.242.171.216:3128",
+        "122.49.208.242:3128",
+        "194.8.218.100:8080",
+    };
 
     public CrawlBot() throws IOException {
         System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
@@ -68,8 +73,8 @@ public class CrawlBot {
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
-        List<String> proxies = getProxies();
-        options.addArguments("--proxy-server=" + proxies.get(NumberUtil.getRandomNumber(0, proxies.size() - 1)));
+//        List<String> proxies = getProxies();
+        options.addArguments("--proxy-server=" + proxies[NumberUtil.getRandomNumber(0, proxies.length - 1)]);
 //        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
         WebDriver driver = new ChromeDriver(options);
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
