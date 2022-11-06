@@ -73,6 +73,7 @@ public class CrawlBot {
             System.out.println("After driver to link ......................... >>>>>>>");
             List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
             System.out.println("After driver get list element ......................... >>>>>>>");
+            System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements.size());
             for (WebElement element: elements) {
                 //Bóc tách dữ liệu của từng item và lưu vào trong database
                 try {
@@ -120,13 +121,14 @@ public class CrawlBot {
                             .status(ProductStatus.PENDING)
                             .build();
                     products.add(product);
+                    category.setStatus(CrawlCategoryStatus.CRAWLED);
                 }catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    category.setStatus(CrawlCategoryStatus.FAILED);
+                    System.out.println("Error >>>>>>>>>>>>>>" + e.getMessage());
                     e.printStackTrace();
                     continue;
                 }
             }
-            category.setStatus(CrawlCategoryStatus.CRAWLED);
             crawlCategoryService.update(category.getId(), category);
         }
         productService.saveAll(products);
