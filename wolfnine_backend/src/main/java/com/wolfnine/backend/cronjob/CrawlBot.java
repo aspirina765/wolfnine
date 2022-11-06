@@ -17,6 +17,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -46,25 +47,28 @@ public class CrawlBot {
     private ProductService productService;
 
     public CrawlBot() throws IOException {
-//        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
-        WebDriverManager.chromedriver()
-                .setup();
-        service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File("/usr/bin/chromedriver"))
-                .usingAnyFreePort()
-                .withTimeout(Duration.ofMinutes(10))
-                .build();
-        service.start();
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+//        WebDriverManager.chromedriver()
+//                .setup();
+//        service = new ChromeDriverService.Builder()
+//                .usingDriverExecutable(new File("/usr/bin/chromedriver"))
+//                .usingAnyFreePort()
+//                .withTimeout(Duration.ofMinutes(10))
+//                .build();
+//        service.start();
         options = new ChromeOptions();
         options.setHeadless(true);
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--headless");
     }
 
     @Async
     @Scheduled(fixedRate = 1000 * 20)
     public void crawlList() throws InterruptedException {
-        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
-//        WebDriver driver = new ChromeDriver(options);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
+//        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
+        WebDriver driver = new ChromeDriver(options);
+//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
         System.out.println("Bot running ...");
         List<CrawlCategory> crawlCategories = crawlCategoryService.findAllByStatus(CrawlCategoryStatus.PENDING);
         List<Product> products = new ArrayList<>();
@@ -73,8 +77,8 @@ public class CrawlBot {
                 System.out.println("Start crawling ...");
                 driver.get(category.getLink());
                 System.out.println("After driver to link ......................... >>>>>>>");
-//                List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
-            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
+                List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+//            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(category.getCrawlConfig().getSelectorList())));
                 System.out.println("After driver get list element ......................... >>>>>>>");
                 System.out.println("Count size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + elements);
                 for (WebElement element: elements) {

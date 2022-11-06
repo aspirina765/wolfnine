@@ -122,6 +122,10 @@
             <artifactId>browserup-proxy-core</artifactId>
             <version>2.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-remote-driver</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
