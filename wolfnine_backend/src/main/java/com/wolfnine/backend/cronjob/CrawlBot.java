@@ -70,7 +70,9 @@ public class CrawlBot {
         for (CrawlCategory category : crawlCategories) {
             System.out.println("Start crawling ...");
             driver.get(category.getLink());
+            System.out.println("After driver to link ......................... >>>>>>>");
             List<WebElement> elements = driver.findElements(By.cssSelector(category.getCrawlConfig().getSelectorList()));
+            System.out.println("After driver get list element ......................... >>>>>>>");
             for (WebElement element: elements) {
                 //Bóc tách dữ liệu của từng item và lưu vào trong database
                 try {
